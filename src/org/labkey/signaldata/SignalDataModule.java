@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.labkey.hplc;
+package org.labkey.signaldata;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
@@ -25,7 +25,7 @@ import org.labkey.api.view.WebPartFactory;
 import java.util.Collection;
 import java.util.Collections;
 
-public class HPLCModule extends CodeOnlyModule
+public class SignalDataModule extends CodeOnlyModule
 {
     public static final String NAME = "HPLC";
 
@@ -45,7 +45,7 @@ public class HPLCModule extends CodeOnlyModule
     @Override
     protected void init()
     {
-        addController(HPLCController.NAME, HPLCController.class);
+        addController(SignalDataController.NAME, SignalDataController.class);
     }
 
     @Override

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.labkey.hplc;
+package org.labkey.signaldata;
 
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
-import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.RuntimeSQLException;
@@ -38,13 +37,10 @@ import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.services.ServiceRegistry;
 import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.UnexpectedException;
-import org.labkey.api.view.JspView;
-import org.labkey.api.view.NavTree;
 import org.labkey.api.webdav.WebdavResource;
 import org.labkey.api.webdav.WebdavService;
-import org.labkey.hplc.assay.HPLCAssayDataHandler;
+import org.labkey.signaldata.assay.SignalDataAssayDataHandler;
 import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -54,12 +50,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HPLCController extends SpringActionController
+public class SignalDataController extends SpringActionController
 {
-    private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(HPLCController.class);
+    private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(SignalDataController.class);
     public static final String NAME = "hplc";
 
-    public HPLCController()
+    public SignalDataController()
     {
         setActionResolver(_actionResolver);
     }
@@ -83,8 +79,8 @@ public class HPLCController extends SpringActionController
             {
                 containerPath = root.getContainer().getPath();
                 webdavURL = root.getWebdavURL();
-                if (HPLCAssayDataHandler.NAMESPACE.length() > 0)
-                    webdavURL += HPLCAssayDataHandler.NAMESPACE;
+                if (SignalDataAssayDataHandler.NAMESPACE.length() > 0)
+                    webdavURL += SignalDataAssayDataHandler.NAMESPACE;
             }
 
             resp.put("containerPath", containerPath);

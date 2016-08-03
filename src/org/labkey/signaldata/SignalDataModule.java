@@ -27,7 +27,7 @@ import java.util.Collections;
 
 public class SignalDataModule extends CodeOnlyModule
 {
-    public static final String NAME = "HPLC";
+    public static final String NAME = "SignalData";
 
     @Override
     public String getName()

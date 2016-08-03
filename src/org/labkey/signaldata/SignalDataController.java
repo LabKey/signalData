@@ -53,7 +53,7 @@ import java.util.Map;
 public class SignalDataController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(SignalDataController.class);
-    public static final String NAME = "hplc";
+    public static final String NAME = "SignalData";
 
     public SignalDataController()
     {
@@ -62,10 +62,10 @@ public class SignalDataController extends SpringActionController
 
 
     /**
-     * Meant to mimic PipelineController.getPipelineContainerAction but with the incorporated HPLC path context
+     * Meant to mimic PipelineController.getPipelineContainerAction but with the incorporated SignalData path context
      */
     @RequiresPermission(ReadPermission.class)
-    public class getHPLCPipelineContainerAction extends ApiAction
+    public class getSignalDataPipelineContainerAction extends ApiAction
     {
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
@@ -91,7 +91,7 @@ public class SignalDataController extends SpringActionController
     }
 
 
-    public static class HPLCResourceForm
+    public static class SignalDataResourceForm
     {
         public String _path;
         public boolean _test = false;
@@ -119,10 +119,10 @@ public class SignalDataController extends SpringActionController
 
 
     @RequiresPermission(ReadPermission.class)
-    public class getHPLCResourceAction extends ApiAction<HPLCResourceForm>
+    public class getSignalDataResourceAction extends ApiAction<SignalDataResourceForm>
     {
         @Override
-        public ApiResponse execute(HPLCResourceForm form, BindException errors) throws Exception
+        public ApiResponse execute(SignalDataResourceForm form, BindException errors) throws Exception
         {
             String path = form.getPath();
             WebdavResource resource = WebdavService.get().lookup(path);
@@ -146,13 +146,13 @@ public class SignalDataController extends SpringActionController
 
                         int scale = ExperimentService.get().getTinfoData().getColumn("DataFileURL").getScale();
                         String dataFileURL = data.getDataFileUrl();
-                        if (dataFileURL != null && dataFileURL.length() > scale)
+                        if (dataFileURL == null || dataFileURL.length() <= scale)
                         {
-                            // If the path is too long to store, bail out without creating an exp.data row
+                            data.save(getUser());
                         }
                         else
                         {
-                            data.save(getUser());
+                            // If the path is too long to store, bail out without creating an exp.data row
                         }
                     }
                 }

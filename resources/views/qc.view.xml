@@ -1,15 +1,15 @@
-<view xmlns="http://labkey.org/data/xml/view" frame="none" title="HPLC Quality Control">
+<view xmlns="http://labkey.org/data/xml/view" frame="none" title="Signal Data Quality Control">
     <dependencies>
         <dependency path="clientapi/ext4"/>
         <dependency path="clientapi/ext3"/>
         <dependency path="vis/vis"/>
-        <dependency path="hplc/regression.js"/>
-        <dependency path="hplc/Stats.js"/>
-        <dependency path="hplc/DataService.js"/>
-        <dependency path="hplc/SpectrumPlot.js"/>
-        <dependency path="hplc/ProvisionalRun.js"/>
-        <dependency path="hplc/SampleCreator.js"/>
-        <dependency path="hplc/StandardCreator.js"/>
-        <dependency path="hplc/QualityControl.js"/>
+        <dependency path="signaldata/regression.js"/>
+        <dependency path="signaldata/Stats.js"/>
+        <dependency path="signaldata/DataService.js"/>
+        <dependency path="signaldata/SpectrumPlot.js"/>
+        <dependency path="signaldata/ProvisionalRun.js"/>
+        <dependency path="signaldata/SampleCreator.js"/>
+        <dependency path="signaldata/StandardCreator.js"/>
+        <dependency path="signaldata/QualityControl.js"/>
     </dependencies>
 </view>

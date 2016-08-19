@@ -1,14 +1,17 @@
 <libraries xmlns="http://labkey.org/clientLibrary/xml/">
-    <library compileInProductionMode="false">
-        <script path="signaldata/signaldata.css"/>
-        <script path="signaldata/UploadLog.js"/>
-        <script path="signaldata/upload.js"/>
-    </library>
-    <dependencies>
-        <dependency path="Ext4"/>
-        <dependency path="Ext4ClientApi"/>
-        <dependency path="Dropzone"/>
-        <dependency path="File"/>
-        <dependency path="internal-FileDrop"/>
-    </dependencies>
+<library compileInProductionMode="false">
+    <script path="signaldata/signaldata.css"/>
+    <script path="signaldata/UploadLog.js"/>
+    <script path="signaldata/uploadResultFiles.js"/>
+    <script path="signaldata/uploadResultDataForm.js"/>
+</library>
+<dependencies>
+    <dependency path="Ext4"/>
+    <dependency path="Ext4ClientApi"/>
+    <dependency path="Dropzone"/>
+    <dependency path="File"/>
+    <dependency path="internal-FileDrop"/>
+    <dependency path="FileUploadField.js"/>
+    <!--TODO: Add Experiment API dependency -->
+</dependencies>
 </libraries>

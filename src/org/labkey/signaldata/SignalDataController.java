@@ -53,7 +53,7 @@ import java.util.Map;
 public class SignalDataController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(SignalDataController.class);
-    public static final String NAME = "SignalData";
+    public static final String NAME = "signaldata";
 
     public SignalDataController()
     {

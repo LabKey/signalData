@@ -3,40 +3,9 @@
  */
 Ext4.ns('LABKEY.SignalData');
 
-LABKEY.SignalData.initializeUpload = function(elementId) {
+LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, elementId, assay, loadedRun, resultFileContents) {
 
-    var assay;
-    var assayType = 'Signal Data';
-    var hideOverlay = false;
-
-    var loadAssay = function(cb, scope) {
-        if (LABKEY.page && LABKEY.page.assay) {
-            assay = LABKEY.page.assay;
-            cb.call(scope || this);
-        }
-        else {
-            LABKEY.Assay.getByType({
-                type: assayType,
-                success: function(definitions) {
-                    if (definitions.length == 0) {
-                        var link = LABKEY.Utils.textLink({
-                            text: 'New assay design',
-                            href: LABKEY.ActionURL.buildURL('assay', 'chooseAssayType')
-                        });
-                        Ext4.get(elementId).update('To get started, create a "' + assayType + '" assay. ' + link);
-                    }
-                    else if (definitions.length == 1) {
-                        assay = definitions[0];
-                        cb.call(scope || this);
-                    }
-                    else {
-                        // In the future could present a dropdown allowing the user to switch between active assay design
-                        Ext4.get(elementId).update('This webpart does not currently support multiple "' + assayType + '" assays in the same folder.');
-                    }
-                }
-            })
-        }
-    };
+    var hideOverlay = true;
 
     var setWorkingDirectory = function() {
         var dir = 'TEMP_SignalData_' + getRunFolderName();
@@ -54,7 +23,6 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
         var now = new Date();
         var parts = [now.getFullYear(), now.getMonth() + 1 /*javascript uses 0 based month*/,
                 now.getDate(), now.getHours(),now.getMinutes(),now.getSeconds()];
-
         return parts.join('_');
     };
 
@@ -62,6 +30,8 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
         region: 'center',
         workingDirectory: getTempFolderName(),
         flex: 2,
+        results: resultFileContents,
+        resultFields: assay.domains[assay.name + ' Result Fields'],
         listeners: {
             removefile: function(name, count) {
                 if (count == 0) {
@@ -130,6 +100,9 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
                                                 uploadLog.workingDirectory = setWorkingDirectory();
                                                 //Recreate working dir
                                                 uploadLog.checkOrCreateWorkingFolder(uploadLog.getWorkingPath(), uploadLog);
+                                                document.getElementById(metadataFormId).style.display = '';
+                                                LABKEY.internal.FileDrop.hideDropzones();
+                                                document.getElementById(elementId).innerHTML = ""; //Clear this form.
                                             }, this);
                                         }
                                     }
@@ -144,10 +117,7 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
                             handler: function () {
                                 var form = this.up('form').getForm();
 
-                                if (uploadLog.getStore().getCount() == 0) {
-                                    showNoFilesError();
-                                }
-                                else if (form.isValid()) {
+                                if (form.isValid()) {
                                     closeRun(form);
                                 }
                             }
@@ -195,6 +165,12 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
                 },
 
                 init: function() {
+                    this.on('addedfile', function (file) {
+                        if (!uploadLog.containsFile(file)) {
+                            dropzone.removeFile(file);
+                            Ext4.Msg.show({msg: file.name + ' not uploaded'});
+                        }
+                    });
 
                     this.on('processing', function (file) {
                         var cwd = uploadLog.getFullWorkingPath();
@@ -204,12 +180,13 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
                             this.options.url = uploadLog.fileSystem.getParentPath(uri);
                         }
 
-                        //Add entry to uploadLog
-                        var process = uploadLog.getModelInstance({
-                            uploadTime: new Date(),
-                            fileName: file.name
-                        });
-                        process = uploadLog.getStore().add(process)[0];
+                        //get modelInstance from store that matches file.name
+                        var store = uploadLog.getStore();
+                        var idx = store.findExact('DataFile', file.name);
+                        var process = store.getAt(idx);
+
+                        //Set upload time
+                        process.set(uploadLog.UPLOAD_TIME, new Date());
                         file.workingId = process.get('id');
                         uploadLog.getStore().sync();
 
@@ -221,7 +198,8 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
                     //Update file progress bar
                     this.on('uploadprogress',function(file, progress, bytesSent){
                         var model = uploadLog.getStore().getById(file.workingId);
-                        model.set('progress', progress);
+                        if (model)
+                            model.set('progress', progress);
                     });
 
                     //Update in-progress tracker
@@ -273,7 +251,6 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
 
         window.onunload = function(){
             clearCachedReports();
-            sessionStorage.signalDataWorkingDirectory = undefined;
         };
 
         dropInit();
@@ -369,7 +346,7 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
             success: function(batch) {
                 clearCachedReports(function(){
                     uploadLog.workingDirectory = setWorkingDirectory();
-                    window.location = LABKEY.ActionURL.buildURL('assay', 'assayBegin', undefined, {rowId: assay.id});
+                    window.location = LABKEY.ActionURL.buildURL('assay', 'assayBegin', null, {rowId: assay.id});
                 },this);
             }
         }, this);
@@ -380,17 +357,24 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
         var dataRows = [];
         var dataInputs = [];
 
-        Ext4.each(files, function(resultFile) {
-            dataRows.push({
-                Name: resultFile.text,
-                DataFile: resultFile.text,
-                TestType: 'SMP'
+        var store = uploadLog.getStore();
+        var rows = store.getRange();
+
+        rows.forEach(function (row){
+            var dataRow = {};
+            row.fields.eachKey(function(key){
+                dataRow[key] = row.get(key);
             });
-            dataInputs.push({
-                name: resultFile.text,
-                dataFileURL: resultFile.dataFileURL
-            });
-        });
+            dataRows.push(dataRow);
+
+            if(row.get('file')) {
+                dataInputs.push({
+                    name: row.get(uploadLog.DATA_FILE),
+                    dataFileURL: row.get(uploadLog.FILE_URL)
+                });
+            }
+
+        }, this);
 
         var run = new LABKEY.Exp.Run({
             name: getRunFolderName(),
@@ -402,7 +386,5 @@ LABKEY.SignalData.initializeUpload = function(elementId) {
         saveRun(run);
     };
 
-    loadAssay(function() {
-        Ext4.onReady(init);
-    });
+    init();
 };

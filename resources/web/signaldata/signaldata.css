@@ -12,3 +12,8 @@
 .signaldata-run-form .x4-toolbar .x4-box-target a {
     margin-bottom: 20px;
 }
+
+.signaldata-upload-target {
+    display:block;
+    overflow:auto;
+}

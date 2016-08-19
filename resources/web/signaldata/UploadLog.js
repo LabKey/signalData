@@ -4,65 +4,45 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+Ext4.ns('LABKEY.SignalData');
+
 Ext4.define('LABKEY.SignalData.UploadLog', {
 
     extend: 'Ext.panel.Panel',
 
-    modelClass:'LABKEY.SignalData.model.Uploads',
+    modelClass: 'LABKEY.SignalData.model.Uploads',
 
-    constructor : function(config) {
-
-        this.callParent([config]);
-
-        this.addEvents('removefile');
-    },
-
-    initComponent : function() {
-
+    UPLOAD_TIME: 'uploadTime',
+    DATA_FILE: 'DataFile',
+    FILE_URL: 'DataFileURL',
+    FILENAME: 'FileName',
+    constructor: function (config) {
         if (!Ext4.ModelManager.isRegistered(this.modelClass)) {
-
             Ext4.define(this.modelClass, {
                 extend: 'Ext.data.Model',
-                fields: [
-                    { name: 'fileName', type: 'string' },
-                    { name: 'uploadFileURL', type: 'string' },
-                    {
-                        name: 'messages',
-                        convert: function(raw) {
-                            var value = [];
-
-                            if (Ext4.isArray(raw)) {
-                                value = raw;
-                            }
-                            else if (!Ext4.isEmpty(raw)) {
-                                value.push(raw);
-                            }
-
-                            return value;
-                        }
-                    },
-                    { name: 'uploadTime', type: 'date' },
-                    { name:'progress', type:'int'}
-                ],
-
-                publishMessage : function(message) {
+                fields: this.getFields(config.resultFields),
+                publishMessage: function (message) {
                     var oldMsgs = this.get("messages");
                     oldMsgs.push(message);
                     this.setCommit("messages", oldMsgs);
                 },
 
-                setCommit : function(fieldName, newValue) {
+                setCommit: function (fieldName, newValue) {
                     this.set(fieldName, newValue);
                     this.commit();
                 }
             });
         }
 
-        this.items = [ this.getGrid() ];
+        this.items = [this.getGrid(config.results, config.resultFields)];
+        this.callParent([config]);
+        this.addEvents('removefile');
+    },
 
+    initComponent: function () {
         this.callParent();
 
-        this.resolvePipeline(function(context){
+        this.resolvePipeline(function (context) {
             this.fileSystem = Ext4.create('File.system.Webdav', {
                 rootPath: context['webDavURL'],
                 rootOffset: 'SignalDataAssayData',
@@ -73,13 +53,54 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
         }, this);
     },
 
-    getGrid : function() {
+    getFields: function (resultFields) {
+        if (!this.fields) {
+            var fields = [];
+            resultFields.forEach(function (field) {
+                fields.push({
+                    name: field.name,
+                    type: 'string'
+                });
+            });
+
+            this.fields = fields.concat([
+                {name: this.FILE_URL, type: 'string'},
+                {
+                    name: 'messages',
+                    convert: function (raw) {
+                        var value = [];
+
+                        if (Ext4.isArray(raw)) {
+                            value = raw;
+                        }
+                        else if (!Ext4.isEmpty(raw)) {
+                            value.push(raw);
+                        }
+
+                        return value;
+                    }
+                },
+                {name: this.UPLOAD_TIME, type: 'date'},
+                {name: 'progress', type: 'int'},
+                {name: 'file', type:'file'}
+            ]);
+        }
+
+        return this.fields;
+    },
+
+    getGrid: function (results, assayResultFields) {
         if (!this._grid) {
             this._grid = Ext4.create('Ext.grid.Panel', {
                 height: 300,
-                store: this.getStore(),
-                columns: this.getColumns(),
+                store: this.getStore(results),
+                columns: this.getColumns(assayResultFields),
                 invalidateScrollerOnRefresh: false,
+                plugins: [
+                    Ext4.create('Ext.grid.plugin.CellEditing', {
+                        clicksToEdit: 1
+                    })
+                ],
                 flex: 1
             });
         }
@@ -87,63 +108,64 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
         return this._grid;
     },
 
-    getColumns : function() {
-        return [
-            {
-                xtype: 'templatecolumn',
-                text: 'File Name',
-                flex: 1,
-                tpl: [
-                    '<tpl if="uploadFileURL !== undefined && uploadFileURL.length &gt; 0">',
-                    '<a href="{uploadFileURL}">{fileName:htmlEncode}</a>',
-                    '<tpl else>',
-                    '<span>{fileName:htmlEncode}</span>',
-                    '</tpl>'
-                ]
-            }, {
+    getColumns: function (assayResultFields) {
+        if (!this.columns) {
+
+            var columns = [];
+            assayResultFields.forEach(function (field) {
+                columns.push({
+                    text: field.label,
+                    dataIndex: field.fieldKey,
+                    type: field.jsonType,
+                    //TODO: create toggle option to enable editing?
+                    //TODO: Instead make click open file chooser and associate selected file to row
+                    editor: {
+                        xtype: 'textfield'
+                    }
+                });
+            });
+
+            this.columns = columns.concat([{
                 text: 'Upload Time',
-                dataIndex: 'uploadTime',
+                dataIndex: this.UPLOAD_TIME,
                 renderer: Ext4.util.Format.dateRenderer('m/d/y g:i')
                 , width: 150
-            }
-            , {
+            }, {
                 text: 'Upload Progress',
                 width: 150,
                 dataIndex: 'progress',
                 sortable: true,
                 renderer: function (v, m, r) {
-                    var calcValue = v/100;
-                    var pbRenderer = (
-                        function () {
-                            var b = new Ext4.ProgressBar({height: 15});
-                            return function (val) {
-                                b.updateProgress(val);
-                                return Ext4.DomHelper.markup(b.getRenderTree());
-                            };
-                        }
-                    ) ();
+                    var calcValue = v / 100;
+                    var pbRenderer = (function () {
+                        var b = new Ext4.ProgressBar({height: 15});
+                        return function (val) {
+                            b.updateProgress(val);
+                            return Ext4.DomHelper.markup(b.getRenderTree());
+                        };
+                    })();
 
                     return pbRenderer(calcValue);
                 }
             }, {
-                xtype:'actioncolumn',
-                width:20,
+                xtype: 'actioncolumn',
+                width: 20,
                 items: [{
                     iconCls: 'iconDelete',
-                    tooltip: 'Delete',
-                    handler: function(grid, rowIndex, colIndex) {
+                    tooltip: 'Remove uploaded file',
+                    handler: function (grid, rowIndex, colIndex) {
                         var store = grid.getStore();
                         var row = store.getAt(rowIndex);
-                        var fileName = row.get('fileName');
+                        var fileName = row.get(this.DATA_FILE);
                         var me = this;
 
                         //Delete File
                         this.fileSystem.deletePath({
                             path: this.fileSystem.concatPaths(this.getFullWorkingPath(), fileName),
                             isFile: true,
-                            success: function() {
-                                //remove from grid
-                                store.removeAt(rowIndex);
+                            success: function () {
+                                row.set('progress', 0);
+                                row.set(me.UPLOAD_TIME, '');
                                 store.sync();
                                 me.fireEvent('removefile', fileName, store.getCount());
                             }
@@ -151,30 +173,51 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                     },
                     scope: this
                 }]
-            }
-        ];
+            }]);
+        }
+
+        return this.columns;
     },
 
-    getStore : function() {
+    getStore: function (data) {
         if (!this._store) {
-            this._store = Ext4.create('Ext.data.Store', {
+            var store = Ext4.create('Ext.data.Store', {
                 model: this.modelClass,
-                autoLoad: true,
                 autoSync: true,
-                proxy : {
+                proxy: {
                     type: 'sessionstorage',
                     id: 'pSizeProxy'
                 }
             });
 
+            this.loadData(store, data);
+
+            this._store = store;
             // let the user see the most recent uploads at the top
-            this._store.sort('uploadTime', 'DESC');
+            this._store.sort(this.UPLOAD_TIME, 'DESC');
         }
 
         return this._store;
     },
+    loadData: function (store, content) {
+        // Use 1st sheet
+        var sheet = content.sheets[0];
+        var data = sheet.data;
 
-    getModelInstance : function(config) {
+        //remove headers
+        var headers = data.shift();
+
+        data.forEach(function (dataRow) {
+            var rowConfig = {};
+            for (var i = 0; i < dataRow.length; i++) {
+                rowConfig[headers[i].value] = dataRow[i].value;
+            }
+
+            store.add(this.getModelInstance(rowConfig));
+        }, this);
+    },
+
+    getModelInstance: function (config) {
         return Ext4.create(this.modelClass, config);
     },
 
@@ -185,10 +228,10 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
      * @param tempFolderName
      * @param targetFolder
      */
-    commitRun: function(targetDirectory, callback, scope, params) {
+    commitRun: function (targetDirectory, callback, scope, params) {
         if (Ext4.isFunction(callback)) {
             var me = this;
-            var destination = this.fileSystem.concatPaths(this.fileSystem.getBaseURL(),targetDirectory);
+            var destination = this.fileSystem.concatPaths(this.fileSystem.getBaseURL(), targetDirectory);
             this.fileSystem.renamePath({
                 source: this.getWorkingPath(),
                 destination: destination,
@@ -196,11 +239,11 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                 success: function (fileSystem, path, records) {
                     me.resolveFileResources(destination, callback, scope, params);
                 }
-            }, this);
+            });
         }
     },
 
-    resolveFileResources:function(targetDirectory, callback, callbackScope, callbackParams) {
+    resolveFileResources: function (targetDirectory, callback, callbackScope, callbackParams) {
         LABKEY.Ajax.request({
             url: this.fileSystem.getURI(targetDirectory),
             method: 'GET',
@@ -213,52 +256,61 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                     }
                 }
             },
-            failure: function() {
+            failure: function () {
             }
-            ,scope:this
+            , scope: this
         }, this);
     },
 
     /**
      * will append a 'dataFileURL' property to all files resolved as resources
      */
-    resolveDataFileURL: function(files, callback, scope, params) {
+    resolveDataFileURL: function (files, callback, scope, params) {
         if (Ext4.isFunction(callback)) {
 
             var received = 0;
             var newFiles = [];
 
-            function done(file, results)
-            {
-                file['dataFileURL'] = results['DataFileUrl'];
+            var me = this;
+
+            function done(file, results) {
+
+                var store = me.getStore();
+                var idx = store.findExact(me.DATA_FILE, file.text);
+                var process = store.getAt(idx);
+
+                //Set upload time
+                process.set(me.FILE_URL, results['DataFileUrl']);
+                process.set('file', file);
                 newFiles.push(file);
                 received++;
 
                 if (received == files.length) {
-                    callback.call(scope || this, newFiles, params);
+                    callback.call(scope || me, newFiles, params);
                 }
             }
 
-            files.forEach(function(file) {
+            //TODO: This should be refactored to use a single ajax call for the array
+            files.forEach(function (file) {
                 LABKEY.Ajax.request({
                     url: LABKEY.ActionURL.buildURL('SignalData', 'getSignalDataResource.api'),
                     method: 'GET',
-                    params: { path: file.id, test: true },
-                    success: function(response) {
+                    params: {path: file.id, test: true},
+                    success: function (response) {
                         done(file, Ext4.decode(response.responseText));
-                    }
+                    },
+                    scope: this
                 });
-            });
+            }, this);
         }
     },
 
-    resolvePipeline: function (callback, scope)
-    {
+    resolvePipeline: function (callback, scope) {
         if (Ext4.isFunction(callback)) {
             Ext4.Ajax.request({
                 url: LABKEY.ActionURL.buildURL('SignalData', 'getSignalDataPipelineContainer.api'),
                 method: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var context = Ext4.decode(response.responseText);
                     if (Ext4.isObject(context) && !Ext4.isEmpty(context.containerPath) && !Ext4.isEmpty(context.webDavURL)) {
                         callback.call(scope || this, context);
@@ -267,7 +319,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                         alert('Failed to load the pipeline context for Signal Data');
                     }
                 },
-                failure : function() {
+                failure: function (error, response) {
                     alert('Failed to load the pipeline context for Signal Data');
                 }
             });
@@ -275,7 +327,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
     },
 
     //TODO: this should probably just be an action
-    createWorkingFolder: function() {
+    createWorkingFolder: function () {
         this.checkOrCreateBaseFolder();
     },
 
@@ -291,7 +343,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                 //directory exists
                 this.checkOrCreateTempFolder();
             },
-            failure: function(b, xhr){
+            failure: function (b, xhr) {
                 this.createFolder(targetURL, this.checkOrCreateTempFolder, this);
             },
             scope: this
@@ -310,10 +362,10 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                 //directory exists
                 this.checkOrCreateWorkingFolder();
             },
-            failure: function(b, xhr){
+            failure: function (b, xhr) {
                 this.createFolder(targetURL, this.checkOrCreateWorkingFolder, this);
             },
-            scope:this
+            scope: this
         }, this);
     },
 
@@ -327,14 +379,14 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
             params: {method: 'JSON'},
             success: function (response) {
             },
-            failure: function(b, xhr){
+            failure: function (b, xhr) {
                 this.createFolder(targetURL, null, this);
             },
             scope: this
         }, this);
     },
 
-    createFolder:function(targetDir, callback, scope, options){
+    createFolder: function (targetDir, callback, scope, options) {
         //Working directory not found, create it.
         scope.fileSystem.createDirectory({
             path: scope.fileSystem.getURI(targetDir),
@@ -349,11 +401,16 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
         }, scope);
     },
 
-    getWorkingPath: function(){
+    getWorkingPath: function () {
         return this.fileSystem.concatPaths(this.fileSystem.getBaseURL(), 'Temp/' + this.workingDirectory);
     },
-    getFullWorkingPath: function(){
+    getFullWorkingPath: function () {
         return this.fileSystem.getURI(this.getWorkingPath());
     },
-    workingDirectory:''
+    workingDirectory: '',
+    containsFile: function(file) {
+        var store = this.getStore();
+        var idx = store.findExact(this.DATA_FILE, file.name);
+        return store.getAt(idx);
+    }
 });

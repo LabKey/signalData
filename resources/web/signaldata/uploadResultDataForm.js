@@ -3,7 +3,7 @@
  */
 Ext4.ns('LABKEY.SignalData');
 
-LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFileId, metadataTSVId, nextButtonElId, renderToId) {
+LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFileId, metadataTSVId, nextButtonElId, renderToId, templateDivId) {
 
     var assayType = 'Signal Data';
     var assay;
@@ -46,14 +46,12 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
         {
             data.getContent({
                 format: 'jsonTSVExtended',
-                success: function (content, format)
-                {
+                success: function (content) {
                     data.content = content;
                     LABKEY.SignalData.initializeDataFileUploadForm(metadataFormElId, renderToId, assay, run, content);
                     document.getElementById(metadataFormElId).style.display = 'none';
                 },
-                failure: function (error, format)
-                {
+                failure: function (error, format) {
                 }
             });
         }
@@ -82,18 +80,22 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
     var fileForm;
     var tsvForm;
     loadAssay(function() {
+        //Load the rowId into the template link
+        var templateLink = document.getElementById(templateDivId);
+        templateLink.setAttribute('href', LABKEY.ActionURL.buildURL("assay", "template", LABKEY.ActionURL.getContainer(),
+                {rowId: assay.id}));
+
         fileForm = Ext4.create('Ext.form.Panel',{
             renderTo: metadataFileId,
             border: false,
             bodyStyle: 'background-color: transparent;',
             fileUpload: true,
             url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload", LABKEY.ActionURL.getContainer(), { protocolId: assay.id }),
+            flex:1,
             items: [{
-                // TODO: Add assay template file download.
                 xtype: 'filefield',
                 id: 'file',
-                msgTarget: 'side',
-                // buttonOnly: true,
+                width: 400,
                 buttonConfig: {
                     text: 'Upload txt, tsv, xls, xlsx'
                 }
@@ -115,7 +117,6 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
                 return Ext4.getCmp('tsv').value;
             },
             items: [{
-                // TODO: Add assay template file download.
                 xtype: 'textarea',
                 id: 'tsv',
                 height: 300,
@@ -123,11 +124,11 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
                 width: 400,
                 minWidth:150
             }],
-            submit:function(options){
+            submit:function(){
                 LABKEY.Ajax.request({
                     url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload", LABKEY.ActionURL.getContainer()),
                     params: { protocolId: assay.id, fileName: metadataTSVId + '.txt', fileContent: this.getTsvInput() },
-                    success: function(response, options) {
+                    success: function(response) {
                         var data = new LABKEY.Exp.Data(Ext.util.JSON.decode(response.responseText));
                         formSubmitted(data);
                     },
@@ -137,7 +138,7 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
             scope: this
         });
 
-        var nextButton = Ext4.create('Ext.button.Button', {
+        Ext4.create('Ext.button.Button', {
             xtype: 'button',
             renderTo: nextButtonElId,
             text: 'next',

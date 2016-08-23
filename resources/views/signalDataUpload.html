@@ -1,8 +1,13 @@
-<div >
+<div>
     <p>Signal Data Files</p>
     <ol>
-        <li>Import result metadata via file, or cut/paste Tab separated values</li>
-        <li>Import corresponding signal data files via drag and drop</li>
+        <li>
+            Import (or paste) the results file. Data must include a column that has the signal data filename (case-sensitive).
+            <br/><a class="signaldata-upload-templatelink labkey-text-link">Download Spreadsheet Template</a><br/>
+        </li>
+        <li>
+            Enter Run-level data and import the relevant signal data files.
+        </li>
     </ol>
     <div class="signaldata-upload-target">
         <table>
@@ -19,7 +24,7 @@
                 <div class="signaldata-upload-tsv" />
         </tr>
             <tr>
-                <td class="labkey-form-label"></td>
+                <td/>
                 <td>
                     <div class="signaldata-upload-button"></div>
                 </td>
@@ -38,13 +43,16 @@
         var metadataTSVId = LABKEY.Utils.generateUUID();
         var buttonId = LABKEY.Utils.generateUUID();
         var fileUploadElementId = LABKEY.Utils.generateUUID();
+        var templateDivId = LABKEY.Utils.generateUUID();
 
         $('#' + context.wrapperDivId + ' .signaldata-upload-target').attr('id', metadataFormElId);
         $('#' + context.wrapperDivId + ' .signaldata-upload-file').attr('id', metadataFileId);
         $('#' + context.wrapperDivId + ' .signaldata-upload-tsv').attr('id', metadataTSVId);
         $('#' + context.wrapperDivId + ' .signaldata-upload-button').attr('id', buttonId);
         $('#' + context.wrapperDivId + ' .signaldata-upload-result-files').attr('id', fileUploadElementId);
-        LABKEY.SignalData.initializeUploadForm(metadataFormElId, metadataFileId, metadataTSVId, buttonId, fileUploadElementId);
+        $('#' + context.wrapperDivId + ' .signaldata-upload-templatelink').attr('id', templateDivId);
+
+        LABKEY.SignalData.initializeUploadForm(metadataFormElId, metadataFileId, metadataTSVId, buttonId, fileUploadElementId, templateDivId);
 
     })(jQuery);
 </script>

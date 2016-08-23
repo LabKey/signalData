@@ -310,6 +310,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
     },
 
     getAssayDefinition : function(assayType /* String */, callback, scope) {
+        //TODO: can we do this by ID?
         if (Ext4.isString(assayType)) {
             if (Ext4.isObject(this._AssayTypeCache[assayType])) {
                 if (Ext4.isFunction(callback)) {

@@ -136,6 +136,9 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
     getNorth : function() {
 
         if (!this.northpanel) {
+            var xLabel = this.getXLabel();
+            var yLabel = this.getYLabel();
+
             this.northpanel = Ext4.create('Ext.panel.Panel', {
                 region: 'north',
                 height: 120,
@@ -154,7 +157,7 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                         },
                         items: [{
                             xtype: 'fieldcontainer',
-                            fieldLabel: 'Time (m)',
+                            fieldLabel: xLabel,
                             layout: 'hbox',
                             width: 300,
                             items: [{
@@ -190,7 +193,7 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                             }]
                         },{
                             xtype: 'fieldcontainer',
-                            fieldLabel: 'mV Range',
+                            fieldLabel: yLabel,
                             layout: 'hbox',
                             width: 300,
                             items: [{
@@ -268,6 +271,9 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
     getCenter : function() {
 
         if (!this.centerpanel) {
+            var xLabel = this.getXLabel();
+            var yLabel = this.getYLabel();
+
             this.centerpanel = Ext4.create('Ext.panel.Panel', {
                 region: 'center',
                 border: false, frame: false,
@@ -285,8 +291,8 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                 items: [{
                     id: 'plotarea',
                     xtype: 'spectrum',
-                    xLabel: 'Time (m)',
-                    yLabel: 'mV',
+                    xLabel: xLabel,
+                    yLabel: yLabel,
                     leftBoundField: 'aucleft',
                     rightBoundField: 'aucright',
                     lowBoundField: 'mvrangelow',
@@ -332,6 +338,26 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
         }
 
         return this.centerpanel;
+    },
+
+    getXLabel: function(){
+        return this.getAxisLabel('XAxis');
+    },
+    getYLabel: function(){
+        return this.getAxisLabel('YAxis');
+    },
+
+    getAxisLabel: function(axisField) {
+        var assay = this.context.AssayDefinition;
+        if (assay && assay.domains && assay.domains[assay.name + ' Batch Fields']) {
+            var batchFields = assay.domains[assay.name + ' Batch Fields'];
+            for(var i=0; i< batchFields.length;i++) {
+                var field = batchFields[i];
+                if (field.fieldKey === axisField) {
+                    return field.defaultValue;
+                }
+            }
+        }
     },
 
     saveQC : function() {

@@ -11,6 +11,7 @@ LABKEY.SignalData.signalDataSelection = function(dataRegion, dataRegionName) {
     window.location = LABKEY.ActionURL.buildURL('signaldata', 'qc', null, {
         selectionKey: dataRegion.selectionKey,
         queryName: dataRegion.queryName,
-        schemaName: dataRegion.schemaName
+        schemaName: dataRegion.schemaName,
+        rowId: LABKEY.ActionURL.getParameter('rowId')
     });
 };

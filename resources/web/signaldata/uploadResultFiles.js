@@ -116,10 +116,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
                             formBind: true,
                             handler: function () {
                                 var form = this.up('form').getForm();
-
-                                if (form.isValid()) {
-                                    closeRun(form);
-                                }
+                                closeRun(form);
                             }
                         }
                     ]
@@ -331,7 +328,6 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
     };
 
     function saveRun(run) {
-
         LABKEY.Experiment.saveBatch({
             assayId: assay.id,
             batch: {
@@ -343,11 +339,14 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
                     dataInputs: run.dataInputs
                 }]
             },
-            success: function(batch) {
+            success: function() {
                 clearCachedReports(function(){
                     uploadLog.workingDirectory = setWorkingDirectory();
                     window.location = LABKEY.ActionURL.buildURL('assay', 'assayBegin', null, {rowId: assay.id});
                 },this);
+            },
+            failure: function(response){
+                //Should probably do something here...
             }
         }, this);
     }
@@ -357,15 +356,13 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
         var dataRows = [];
         var dataInputs = [];
 
-        var store = uploadLog.getStore();
-        var rows = store.getRange();
+        var rows = uploadLog.getStore().getRange();
 
         rows.forEach(function (row){
             var dataRow = {};
             row.fields.eachKey(function(key){
                 dataRow[key] = row.get(key);
             });
-            dataRows.push(dataRow);
 
             if(row.get('file')) {
                 dataInputs.push({
@@ -373,6 +370,8 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
                     dataFileURL: row.get(uploadLog.FILE_URL)
                 });
             }
+
+            dataRows.push(dataRow);
 
         }, this);
 

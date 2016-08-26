@@ -1,18 +1,15 @@
-package org.labkey.test.pages.hplc;
+package org.labkey.test.pages.signaldata;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 
-/**
- * Created by iansigmon on 2/5/16.
- */
-public class HPLCAssayBeginPage
+public class SignalDataAssayBeginPage
 {
     public static final String TITLE_TEXT = "RawHPLC Overview";
 
     protected BaseWebDriverTest _test;
 
-    public HPLCAssayBeginPage(BaseWebDriverTest test)
+    public SignalDataAssayBeginPage(BaseWebDriverTest test)
     {
         _test = test;
     }

@@ -13,32 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.test.tests.hplc;
+package org.labkey.test.tests.signaldata;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
-import org.labkey.test.categories.HPLC;
-import org.labkey.test.pages.hplc.HPLCAssayBeginPage;
-import org.labkey.test.pages.hplc.HPLCUploadPage;
+import org.labkey.test.categories.Git;
+import org.labkey.test.pages.signaldata.SignalDataAssayBeginPage;
+import org.labkey.test.pages.signaldata.SignalDataUploadPage;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.hplc.HPLCInitializer;
-import org.junit.Assert;
+import org.labkey.test.util.signaldata.SignalDataInitializer;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-@Category({HPLC.class})
-public class HPLCRawTest extends BaseWebDriverTest
+@Category({Git.class})
+public class SignalDataRawTest extends BaseWebDriverTest
 {
-    private static final String PROJECT_NAME = "HPLCRawTest";
-    private static final String SAMPLE_DATA_LOC = "rawHPLC/HPLCassayData/TestRun001";
+    private static final String PROJECT_NAME = "SignalDataRawTest";
+    private static final String SAMPLE_DATA_LOC = "signaldata/SignalDataSampleData/TestRun001";
     private static final String SAVE_BUTTON = "Save Run";
 
     @Nullable
@@ -51,7 +51,7 @@ public class HPLCRawTest extends BaseWebDriverTest
     @Override
     public List<String> getAssociatedModules()
     {
-        return Collections.singletonList("HPLC");
+        return Collections.singletonList("SignalData");
     }
 
     @Override
@@ -63,8 +63,8 @@ public class HPLCRawTest extends BaseWebDriverTest
     @BeforeClass
     public static void doSetup() throws Exception
     {
-        HPLCRawTest test = (HPLCRawTest) getCurrentTest();
-        HPLCInitializer _initializer = new HPLCInitializer(test, test.getProjectName());
+        SignalDataRawTest test = (SignalDataRawTest) getCurrentTest();
+        SignalDataInitializer _initializer = new SignalDataInitializer(test, test.getProjectName());
         _initializer.setupProject();
     }
 
@@ -78,7 +78,7 @@ public class HPLCRawTest extends BaseWebDriverTest
         File testFile = files[3];
 
         //Test search by file
-        HPLCAssayBeginPage beginPage = new HPLCAssayBeginPage(this);
+        SignalDataAssayBeginPage beginPage = new SignalDataAssayBeginPage(this);
         beginPage.setSearchBox(testFile.getName());
         DataRegionTable table = new DataRegionTable("aqwp2", this);
         Assert.assertEquals(1, table.getDataRowCount());
@@ -124,7 +124,7 @@ public class HPLCRawTest extends BaseWebDriverTest
 
         ///////////  Check run creation with single file  ///////////
         File testFile = files[3];
-        HPLCUploadPage uploadPage = new HPLCUploadPage(this);
+        SignalDataUploadPage uploadPage = new SignalDataUploadPage(this);
         uploadPage.uploadFile(testFile);
 
         //Delete file
@@ -141,7 +141,7 @@ public class HPLCRawTest extends BaseWebDriverTest
         clickButton(SAVE_BUTTON, runName);
 
         //Check if run results were added
-        HPLCAssayBeginPage beginPage = new HPLCAssayBeginPage(this);
+        SignalDataAssayBeginPage beginPage = new SignalDataAssayBeginPage(this);
         beginPage.assertValuePresent(runName, 1);
 
         //Check if deleted file was added as result
@@ -169,8 +169,8 @@ public class HPLCRawTest extends BaseWebDriverTest
     {
         //Navigate to Landing Page
         goToProjectHome();
-        clickAndWait(Locator.linkWithText(HPLCInitializer.RAW_HPLC_ASSAY));
-        HPLCAssayBeginPage page = new HPLCAssayBeginPage(this);
+        clickAndWait(Locator.linkWithText(SignalDataInitializer.RAW_SignalData_ASSAY));
+        SignalDataAssayBeginPage page = new SignalDataAssayBeginPage(this);
         page.waitForPageLoad();
     }
 
@@ -178,7 +178,7 @@ public class HPLCRawTest extends BaseWebDriverTest
     {
         navigateToAssayLandingPage();
         clickButton("Import Data");
-        HPLCUploadPage page = new HPLCUploadPage(this);
+        SignalDataUploadPage page = new SignalDataUploadPage(this);
         page.waitForPageLoad();
     }
 }

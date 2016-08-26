@@ -1,4 +1,4 @@
-package org.labkey.test.util.hplc;
+package org.labkey.test.util.signaldata;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
@@ -6,20 +6,17 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.util.LogMethod;
 
-/**
- * Created by Nick Arnold on 1/5/2016.
- */
-public class HPLCInitializer
+public class SignalDataInitializer
 {
     private final BaseWebDriverTest _test;
     private final String _project;
 
-    public static final String RAW_HPLC_ASSAY = "RawHPLC";
-    public static final String RAW_HPLC_DESC = "HPLC Raw Assay Data";
+    public static final String RAW_SignalData_ASSAY = "RawSignalData";
+    public static final String RAW_SignalData_DESC = "SignalData Raw Assay Data";
 
-    public static final String RAW_HPLC_PIPELINE_PATH = TestFileUtils.getSampleData("rawHPLC").getPath();
+    public static final String RAW_SignalData_PIPELINE_PATH = TestFileUtils.getSampleData("rawSignalData").getPath();
 
-    public HPLCInitializer(BaseWebDriverTest test, String projectName)
+    public SignalDataInitializer(BaseWebDriverTest test, String projectName)
     {
         _test = test;
         _project = projectName;
@@ -29,30 +26,30 @@ public class HPLCInitializer
     public void setupProject()
     {
         _test._containerHelper.createProject(_project, "Assay");
-        _test._containerHelper.enableModule(_project, "HPLC");
+        _test._containerHelper.enableModule(_project, "SignalData");
 
-        defineRawHPLCAssay();
-        uploadRawHPLCData();
+        defineRawSignalDataAssay();
+        uploadRawSignalDataData();
 
         _test.goToProjectHome();
     }
 
     @LogMethod
-    private void defineRawHPLCAssay()
+    private void defineRawSignalDataAssay()
     {
         _test.goToProjectHome();
 
-        _test.log("Defining Raw HPLC Assay");
+        _test.log("Defining Raw SignalData Assay");
         _test.clickAndWait(Locator.linkWithText("Manage Assays"));
         _test.clickButton("New Assay Design");
 
-        _test.assertTextPresent("Raw HPLC");
-        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", "Raw HPLC"));
+        _test.assertTextPresent("Raw SignalData");
+        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", "Raw SignalData"));
         _test.clickButton("Next");
 
         _test.waitForElement(Locator.xpath("//input[@id='AssayDesignerName']"), _test.WAIT_FOR_JAVASCRIPT);
-        _test.setFormElement(Locator.xpath("//input[@id='AssayDesignerName']"), RAW_HPLC_ASSAY);
-        _test.setFormElement(Locator.xpath("//textarea[@id='AssayDesignerDescription']"), RAW_HPLC_DESC);
+        _test.setFormElement(Locator.xpath("//input[@id='AssayDesignerName']"), RAW_SignalData_ASSAY);
+        _test.setFormElement(Locator.xpath("//textarea[@id='AssayDesignerDescription']"), RAW_SignalData_DESC);
         _test.fireEvent(Locator.xpath("//input[@id='AssayDesignerName']"), WebDriverWrapper.SeleniumEvent.blur);
 
         // Make Runs/Results editable
@@ -63,13 +60,13 @@ public class HPLCInitializer
         _test.waitForText(10000, "Save successful.");
         _test.clickButton("Save & Close");
 
-        _test.setPipelineRoot(RAW_HPLC_PIPELINE_PATH);
+        _test.setPipelineRoot(RAW_SignalData_PIPELINE_PATH);
     }
 
     @LogMethod
-    private void uploadRawHPLCData()
+    private void uploadRawSignalDataData()
     {
-        _test.beginAt("/" + _project + "/hplc-mockHPLCWatch.view");
+        _test.beginAt("/" + _project + "/signaldata-mockSignalDataWatch.view");
         _test.waitForText("Ready to Load");
         _test.click(Locator.tagWithClass("input", "hplc-run-btn"));
         _test.waitForText("Test Run Upload Complete");

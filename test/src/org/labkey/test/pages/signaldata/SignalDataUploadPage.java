@@ -1,4 +1,4 @@
-package org.labkey.test.pages.hplc;
+package org.labkey.test.pages.signaldata;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
@@ -6,41 +6,38 @@ import org.labkey.test.util.Ext4Helper;
 
 import java.io.File;
 
-/**
- * Created by iansigmon on 2/4/16.
- */
-public class HPLCUploadPage
+public class SignalDataUploadPage
 {
     private static final String CLEAR_BUTTON = "Clear Run";
 
     protected BaseWebDriverTest _test;
 
-    public HPLCUploadPage(BaseWebDriverTest test)
+    public SignalDataUploadPage(BaseWebDriverTest test)
     {
         _test = test;
     }
 
     public void uploadFile(File file)
     {
-        _test.setFormElement(HPLCUploadPage.Locators.fileInput, file);
-        _test.waitForElement(HPLCUploadPage.Locators.fileLogCellwithText(file.getName()));
+        _test.setFormElement(SignalDataUploadPage.Locators.fileInput, file);
+        _test.waitForElement(SignalDataUploadPage.Locators.fileLogCellwithText(file.getName()));
     }
 
     public void deleteFile(String fileName)
     {
-        _test.click(HPLCUploadPage.Locators.fileLogDeleteCell(fileName));
-        _test.waitForElementToDisappear(HPLCUploadPage.Locators.fileLogCellwithText(fileName));
+        _test.click(SignalDataUploadPage.Locators.fileLogDeleteCell(fileName));
+        _test.waitForElementToDisappear(SignalDataUploadPage.Locators.fileLogCellwithText(fileName));
     }
 
     public void setRunIDField(String runName)
     {
-        _test.setFormElement(HPLCUploadPage.Locators.runIdentifier, runName);
-        _test.waitForFormElementToEqual(HPLCUploadPage.Locators.runIdentifier, runName);
+        _test.setFormElement(SignalDataUploadPage.Locators.runIdentifier, runName);
+        _test.waitForFormElementToEqual(SignalDataUploadPage.Locators.runIdentifier, runName);
     }
 
     public void waitForPageLoad()
     {
-        _test.waitForElement(HPLCUploadPage.Locators.fileInput, 1000);
+        _test.waitForElement(SignalDataUploadPage.Locators.fileInput, 1000);
     }
 
     public void clearRun()
@@ -48,7 +45,7 @@ public class HPLCUploadPage
         _test.clickButton(CLEAR_BUTTON, 0);
         _test._ext4Helper.clickWindowButton("Clear Run", "Yes", 0, 0);
         _test.waitForElementToDisappear(Ext4Helper.Locators.getGridRow()); //Check grid is cleared
-        _test.assertFormElementEquals(HPLCUploadPage.Locators.runIdentifier, ""); //check form is cleared
+        _test.assertFormElementEquals(SignalDataUploadPage.Locators.runIdentifier, ""); //check form is cleared
     }
 
     private static class Locators

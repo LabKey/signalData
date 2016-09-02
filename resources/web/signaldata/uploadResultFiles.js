@@ -19,11 +19,15 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
         return sessionStorage.signalDataWorkingDirectory;
     };
 
+    var runFolder;
     var getRunFolderName = function() {
-        var now = new Date();
-        var parts = [now.getFullYear(), now.getMonth() + 1 /*javascript uses 0 based month*/,
-                now.getDate(), now.getHours(),now.getMinutes(),now.getSeconds()];
-        return parts.join('_');
+        if (!runFolder) {
+            var now = new Date();
+            var parts = [now.getFullYear(), now.getMonth() + 1 /*javascript uses 0 based month*/,
+                    now.getDate(), now.getHours(),now.getMinutes(),now.getSeconds()];
+            runFolder = parts.join('_');
+        }
+        return runFolder;
     };
 
     var uploadLog = Ext4.create('LABKEY.SignalData.UploadLog', {
@@ -42,7 +46,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
         }
     });
 
-    var clearCachedReports = function(callback, scope) {
+    var clearCachedReports = function(cleanUpFiles, callback, scope) {
         uploadLog.getStore().removeAll();
         uploadLog.getStore().sync();
         form.getForm().reset();
@@ -50,13 +54,17 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
         dropzone.removeAllFiles(true);
         LABKEY.internal.FileDrop.showDropzones();
 
-        //delete contents of working folder
-        uploadLog.fileSystem.deletePath({
-            path: uploadLog.getFullWorkingPath(),
-            isFile: false,
-            success:callback,
-            scope: scope
-        });
+        if (cleanUpFiles) {
+            //delete contents of working folder
+            uploadLog.fileSystem.deletePath({
+                path: uploadLog.getFullWorkingPath(),
+                isFile: false,
+                success: callback,
+                scope: scope
+            });
+        } else {
+            callback.call(scope || this);
+        }
     };
 
     var dropzone; var form;
@@ -96,7 +104,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
                                     buttons: Ext4.Msg.YESNO,
                                     fn: function(btn) {
                                         if (btn == 'yes') {
-                                            clearCachedReports(function() {
+                                            clearCachedReports(true, function() {
                                                 uploadLog.workingDirectory = setWorkingDirectory();
                                                 //Recreate working dir
                                                 uploadLog.checkOrCreateWorkingFolder(uploadLog.getWorkingPath(), uploadLog);
@@ -247,7 +255,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
         };
 
         window.onunload = function(){
-            clearCachedReports();
+            clearCachedReports(true);
         };
 
         dropInit();
@@ -340,13 +348,13 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
                 }]
             },
             success: function() {
-                clearCachedReports(function(){
+                clearCachedReports(false, function() {
                     uploadLog.workingDirectory = setWorkingDirectory();
                     window.location = LABKEY.ActionURL.buildURL('assay', 'assayBegin', null, {rowId: assay.id});
                 },this);
             },
             failure: function(response){
-                //Should probably do something here...
+                //TODO: Should probably do something here...
             }
         }, this);
     }
@@ -358,6 +366,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
 
         var rows = uploadLog.getStore().getRange();
 
+        var runFolder = getRunFolderName();
         rows.forEach(function (row){
             var dataRow = {};
             row.fields.eachKey(function(key){
@@ -365,8 +374,11 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
             });
 
             if(row.get('file')) {
+                // dataRow[uploadLog.FILE_URL] = runFolder + '/' + row.get(uploadLog.DATA_FILE);
+                dataRow[uploadLog.DATA_FILE] = dataRow[uploadLog.FILE_URL].replace('file:','');
+
                 dataInputs.push({
-                    name: row.get(uploadLog.DATA_FILE),
+                    name: row.get(uploadLog.DATA_FILE),  //This is how DataFile will be looked up in Chromatogram
                     dataFileURL: row.get(uploadLog.FILE_URL)
                 });
             }
@@ -376,7 +388,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
         }, this);
 
         var run = new LABKEY.Exp.Run({
-            name: getRunFolderName(),
+            name: runFolder,
             properties: fieldValues,
             dataRows: dataRows,
             dataInputs: dataInputs

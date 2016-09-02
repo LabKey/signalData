@@ -90,7 +90,6 @@ public class SignalDataController extends SpringActionController
         }
     }
 
-
     public static class SignalDataResourceForm
     {
         public String _path;

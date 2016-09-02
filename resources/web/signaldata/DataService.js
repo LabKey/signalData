@@ -233,17 +233,17 @@ Ext4.define('LABKEY.SignalData.DataService', {
                                     name = name[0];
                                     var filePath = "";
                                     var dataFile = run.dataRows[r]['DataFile'];
-                                    filePath = context.pipe + "/" + runIdentifier + "/" + dataFile;
+                                    var fileName = dataFile.split('/').pop();  //Hack to make fileLink and pipe resolve file
+                                    filePath = context.pipe + "/" + runIdentifier + "/" + fileName;
 
                                     //
                                     // Link the associated LABKEY.Exp.Data object (the data file)
                                     //
-                                    var ExpDataRun;
-                                    for (var i = 0; i < run.dataInputs.length; i++)
-                                    {
-                                        if (run.dataInputs[i].name == dataFile)
-                                        {
+                                    var ExpDataRun = null;
+                                    for (var i = 0; i < run.dataInputs.length; i++) {
+                                        if (run.dataInputs[i].name == fileName) {
                                             ExpDataRun = run.dataInputs[i];
+                                            break;
                                         }
                                     }
 

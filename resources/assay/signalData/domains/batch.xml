@@ -18,5 +18,4 @@
         <exp:DefaultType>FixedValue</exp:DefaultType>
         <exp:DefaultValue>mV</exp:DefaultValue>
     </exp:PropertyDescriptor>
-
 </ap:domain>

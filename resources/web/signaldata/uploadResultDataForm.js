@@ -14,8 +14,9 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
             cb.call(scope || this);
         }
         else {
-            LABKEY.Assay.getByType({
-                type: assayType,
+            //TODO: may need to rework this for webpart...
+            LABKEY.Assay.getById({
+                id: LABKEY.ActionURL.getParameter("rowId"),
                 success: function(definitions) {
                     if (definitions.length == 0) {
                         var link = LABKEY.Utils.textLink({

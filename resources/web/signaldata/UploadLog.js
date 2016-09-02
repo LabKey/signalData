@@ -45,7 +45,6 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
         this.resolvePipeline(function (context) {
             this.fileSystem = Ext4.create('File.system.Webdav', {
                 rootPath: context['webDavURL'],
-                rootOffset: 'SignalDataAssayData',
                 rootName: 'fileset'
             });
 
@@ -228,7 +227,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
      * @param tempFolderName
      * @param targetFolder
      */
-    commitRun: function (targetDirectory, callback, scope, params) {
+    commitRun: function (targetDirectory, callback, scope, runProperties) {
         if (Ext4.isFunction(callback)) {
             var me = this;
             var destination = this.fileSystem.concatPaths(this.fileSystem.getBaseURL(), targetDirectory);
@@ -236,23 +235,24 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                 source: this.getWorkingPath(),
                 destination: destination,
                 isFile: false,
-                success: function (fileSystem, path, records) {
-                    me.resolveFileResources(destination, callback, scope, params);
+                success: function () {
+                    me.resolveFileResources(targetDirectory, callback, scope, runProperties);
                 }
             });
         }
     },
 
-    resolveFileResources: function (targetDirectory, callback, callbackScope, callbackParams) {
+    resolveFileResources: function (targetDirectory, callback, callbackScope, runProperties) {
+        var fileUri = this.fileSystem.concatPaths(this.fileSystem.getAbsoluteURL(), targetDirectory);
         LABKEY.Ajax.request({
-            url: this.fileSystem.getURI(targetDirectory),
+            url: fileUri,
             method: 'GET',
             params: {method: 'JSON'},
             success: function (response) {
                 var json = Ext4.decode(response.responseText);
                 if (Ext4.isDefined(json) && Ext4.isArray(json.files)) {
                     if (!Ext4.isEmpty(json.files)) {
-                        this.resolveDataFileURL(json.files, callback, callbackScope, callbackParams);
+                        this.resolveDataFileURL(json.files, callback, callbackScope, runProperties);
                     }
                 }
             },
@@ -265,7 +265,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
     /**
      * will append a 'dataFileURL' property to all files resolved as resources
      */
-    resolveDataFileURL: function (files, callback, scope, params) {
+    resolveDataFileURL: function (files, callback, scope, runProperties) {
         if (Ext4.isFunction(callback)) {
 
             var received = 0;
@@ -280,13 +280,14 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                 var process = store.getAt(idx);
 
                 //Set upload time
+                process.set(me.FILENAME, results[me.DATA_FILE]);
                 process.set(me.FILE_URL, results['DataFileUrl']);
                 process.set('file', file);
                 newFiles.push(file);
                 received++;
 
                 if (received == files.length) {
-                    callback.call(scope || me, newFiles, params);
+                    callback.call(scope || me, newFiles, runProperties);
                 }
             }
 

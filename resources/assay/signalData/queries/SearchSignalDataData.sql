@@ -1,6 +1,6 @@
 -- noinspection SqlDialectInspectionForFile
 -- noinspection SqlNoDataSourceInspectionForFile
--- This query is used to define the search criteria as used for the rawHPLC initial view
+-- This query is used to define the search criteria as used for the SignalData initial view
 SELECT
 Data.RowId,
 --TODO: Identify search fields

@@ -14,7 +14,7 @@ public class SignalDataInitializer
     public static final String RAW_SignalData_ASSAY = "RawSignalData";
     public static final String RAW_SignalData_DESC = "SignalData Raw Assay Data";
 
-    public static final String RAW_SignalData_PIPELINE_PATH = TestFileUtils.getSampleData("rawSignalData").getPath();
+    public static final String RAW_SignalData_SAMPLE_DATA = TestFileUtils.getSampleData("signalData").getPath();
 
     public SignalDataInitializer(BaseWebDriverTest test, String projectName)
     {
@@ -29,7 +29,7 @@ public class SignalDataInitializer
         _test._containerHelper.enableModule(_project, "SignalData");
 
         defineRawSignalDataAssay();
-        uploadRawSignalDataData();
+        mockUploadRunData();
 
         _test.goToProjectHome();
     }
@@ -43,11 +43,11 @@ public class SignalDataInitializer
         _test.clickAndWait(Locator.linkWithText("Manage Assays"));
         _test.clickButton("New Assay Design");
 
-        _test.assertTextPresent("Raw SignalData");
-        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", "Raw SignalData"));
+        _test.assertTextPresent("SignalData");
+        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", "Signal Data"));
         _test.clickButton("Next");
 
-        _test.waitForElement(Locator.xpath("//input[@id='AssayDesignerName']"), _test.WAIT_FOR_JAVASCRIPT);
+        _test.waitForElement(Locator.xpath("//input[@id='AssayDesignerName']"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
         _test.setFormElement(Locator.xpath("//input[@id='AssayDesignerName']"), RAW_SignalData_ASSAY);
         _test.setFormElement(Locator.xpath("//textarea[@id='AssayDesignerDescription']"), RAW_SignalData_DESC);
         _test.fireEvent(Locator.xpath("//input[@id='AssayDesignerName']"), WebDriverWrapper.SeleniumEvent.blur);
@@ -60,16 +60,16 @@ public class SignalDataInitializer
         _test.waitForText(10000, "Save successful.");
         _test.clickButton("Save & Close");
 
-        _test.setPipelineRoot(RAW_SignalData_PIPELINE_PATH);
+        _test.setPipelineRoot(RAW_SignalData_SAMPLE_DATA);
     }
 
     @LogMethod
-    private void uploadRawSignalDataData()
+    private void mockUploadRunData()
     {
         _test.beginAt("/" + _project + "/signaldata-mockSignalDataWatch.view");
         _test.waitForText("Ready to Load");
-        _test.click(Locator.tagWithClass("input", "hplc-run-btn"));
-        _test.waitForText("Test Run Upload Complete");
-        _test.sleep(1500);
+        _test.click(Locator.tagWithClass("input", "signaldata-run-btn"));
+        // Can't just waitForText, as this text is in javascript embedded in the HTML source of the page
+        _test.waitForElement(Locator.tagWithText("li", "Test Run Upload Complete"));
     }
 }

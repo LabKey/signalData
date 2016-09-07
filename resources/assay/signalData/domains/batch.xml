@@ -2,7 +2,6 @@
     <exp:Description>Signal Data Assay Batch fields</exp:Description>
     <exp:PropertyDescriptor>
         <exp:Name>XAxis</exp:Name>
-        <exp:Required>true</exp:Required>
         <exp:Hidden>true</exp:Hidden>
         <exp:RangeURI>http://www.w3.org/2001/XMLSchema#string</exp:RangeURI>
         <exp:Label>X-Axis Label</exp:Label>
@@ -11,7 +10,6 @@
     </exp:PropertyDescriptor>
     <exp:PropertyDescriptor>
         <exp:Name>YAxis</exp:Name>
-        <exp:Required>true</exp:Required>
         <exp:Hidden>true</exp:Hidden>
         <exp:RangeURI>http://www.w3.org/2001/XMLSchema#string</exp:RangeURI>
         <exp:Label>Y-Axis Label</exp:Label>

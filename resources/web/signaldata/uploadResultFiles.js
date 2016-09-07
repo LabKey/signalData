@@ -375,7 +375,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
 
             if(row.get('file')) {
                 // dataRow[uploadLog.FILE_URL] = runFolder + '/' + row.get(uploadLog.DATA_FILE);
-                dataRow[uploadLog.DATA_FILE] = dataRow[uploadLog.FILE_URL].replace('file:','');
+                dataRow[uploadLog.DATA_FILE] = decodeURI(dataRow[uploadLog.FILE_URL]).replace('file:','');
 
                 dataInputs.push({
                     name: row.get(uploadLog.DATA_FILE),  //This is how DataFile will be looked up in Chromatogram

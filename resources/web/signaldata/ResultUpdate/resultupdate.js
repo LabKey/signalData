@@ -125,7 +125,7 @@ var init = function(assay, row){
         };
 
         if (dataFiles)
-            newRow.DataFile = dataFiles['DataFileUrl'].replace('file:','');;
+            newRow.DataFile = decodeURI(dataFiles['DataFileUrl']).replace('file:/','');
 
 
         var fieldValues = form.getForm().getFieldValues(true);
@@ -291,9 +291,10 @@ var init = function(assay, row){
 
                 if (uploadForm) {
                     LABKEY.Ajax.request({
-                        url: form.url,
+                        url: form.url + '?overwrite=t',
                         method: 'POST',
                         form: uploadForm,
+                        header:false,
                         success: function (response, operation) {
                             var results;
                             if (response.responseXML != null) {

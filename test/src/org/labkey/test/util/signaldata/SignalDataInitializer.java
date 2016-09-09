@@ -14,7 +14,7 @@ public class SignalDataInitializer
     public static final String RAW_SignalData_ASSAY = "RawSignalData";
     public static final String RAW_SignalData_DESC = "SignalData Raw Assay Data";
 
-    public static final String RAW_SignalData_SAMPLE_DATA = TestFileUtils.getSampleData("signalData").getPath();
+    public static final String RAW_SignalData_SAMPLE_DATA = TestFileUtils.getSampleData("signaldata").getPath();
 
     public SignalDataInitializer(BaseWebDriverTest test, String projectName)
     {

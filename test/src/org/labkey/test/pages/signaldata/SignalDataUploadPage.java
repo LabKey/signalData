@@ -21,7 +21,6 @@ public class SignalDataUploadPage
     public void uploadMetadataFile(File file)
     {
         _test.setFormElement(SignalDataUploadPage.Locators.metadataFileInput, file);
-       // _test.waitForElement(SignalDataUploadPage.Locators.metadataFileTextBox(file.getName()));
         _test.click(Locators.uploadMetadataButton);
         _test.waitForElement(Locators.runIdentifier);
     }
@@ -61,7 +60,6 @@ public class SignalDataUploadPage
         _test.clickButton(CLEAR_BUTTON, 0);
         _test._ext4Helper.clickWindowButton("Clear Run", "Yes", 0, 0);
         _test.waitForElementToDisappear(Ext4Helper.Locators.getGridRow()); //Check grid is cleared
-//        _test.assertFormElementEquals(SignalDataUploadPage.Locators.runIdentifier, ""); //check form is cleared
     }
 
     public void saveRun()
@@ -75,11 +73,6 @@ public class SignalDataUploadPage
         static final Locator.XPathLocator metadataFileInput = Locator.tagWithAttribute("input", "type", "file").withoutAttribute("multiple", "multiple");
         static final Locator.XPathLocator dropFileInput = Locator.tagWithAttribute("input", "type", "file").withAttribute("multiple", "multiple");
         static final Locator.XPathLocator uploadMetadataButton = Locator.tagWithAttribute("a", "role", "button").withDescendant(Locator.tag("span").withText("next"));
-
-        static Locator.XPathLocator metadataFileTextBox(String fileName)
-        {
-            return Locator.inputById("file-inputEl").containing(fileName);
-        }
 
         static Locator.XPathLocator fileLogCellwithText(String text)
         {

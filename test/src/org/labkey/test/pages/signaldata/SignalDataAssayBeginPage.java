@@ -30,7 +30,7 @@ public class SignalDataAssayBeginPage
 
     public void waitForPageLoad()
     {
-        _test.waitForElement(Locators.searchBox, 1000);
+        _test.waitForElement(Locators.searchBox);
     }
 
     public void waitForGridValue(String value, int qty)

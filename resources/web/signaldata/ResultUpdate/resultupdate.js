@@ -162,11 +162,21 @@ var init = function(assay, row){
                 border:false,
                 items:[{
                     xtype:'fieldcontainer',
-                    tpl: '<div id="{fieldKey:htmlEncode}Template" ><a href="{file.url}">{file.displayValue:htmlEncode}</a> [<a class="removeFile">remove file</a>]</div>',
+                    tpl: '<div id="{fieldKey:htmlEncode}Template" >' +
+                        '<tpl if="file.hasDisplayValue">' +
+                            '<a href="{file.url}">' +
+                                '{file.displayValue:htmlEncode}' +
+                            '</a>' +
+                        '<tpl else>' +
+                            '{file.displayValue:htmlEncode}' +
+                        '</tpl>' +
+                    ' [<a class="removeFile">remove file</a>]' +
+                    '</div>',
                     data:{
-                        file:// row.get(meta.fieldKey),
+                        file:
                         {
                             url: dataFile.url,
+                            hasDisplayValue: dataFile.displayValue,
                             displayValue: dataFile.displayValue || (dataFile.value + " (unavailable) ")
                         },
                         fieldKey: meta.fieldKey

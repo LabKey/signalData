@@ -23,6 +23,7 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.categories.Git;
+import org.labkey.test.categories.SignalData;
 import org.labkey.test.pages.signaldata.SignalDataAssayBeginPage;
 import org.labkey.test.pages.signaldata.SignalDataRunViewerPage;
 import org.labkey.test.pages.signaldata.SignalDataUploadPage;
@@ -35,7 +36,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@Category({Git.class})
+@Category({SignalData.class, Git.class})
 public class SignalDataRawTest extends BaseWebDriverTest
 {
     private static final String PROJECT_NAME = "SignalDataRawTest";

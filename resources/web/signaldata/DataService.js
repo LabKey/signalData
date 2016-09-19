@@ -176,7 +176,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
 
         var loader = function() {
             _count++;
-            if (_count == 3) {
+            if (_count == 4) {
 
                 var batchIds = [];
                 for (var i = 0; i < context.RunDefinitions.length; i++) {
@@ -279,6 +279,13 @@ Ext4.define('LABKEY.SignalData.DataService', {
         //
         this.getAssayDefinition('Signal Data', function(def) {
             context.AssayDefinition = def; loader();
+        }, this);
+
+        //
+        // Get the associated HPLC Assay information
+        //
+        this.getAssayDefinition('HPLC', function(def) {
+            context.HPLCDefinition = def; loader();
         }, this);
 
         //

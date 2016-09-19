@@ -81,6 +81,11 @@ public class SignalDataController extends SpringActionController
                 webdavURL = root.getWebdavURL();
                 if (SignalDataAssayDataHandler.NAMESPACE.length() > 0)
                     webdavURL += SignalDataAssayDataHandler.NAMESPACE;
+
+                //Create folder if needed
+                File sdFileRoot = new File(root.getRootPath(), SignalDataAssayDataHandler.NAMESPACE);
+                if(!sdFileRoot.exists())
+                    sdFileRoot.mkdirs();
             }
 
             resp.put("containerPath", containerPath);

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.module.CodeOnlyModule;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.view.WebPartFactory;
 
 import java.util.Collection;
@@ -28,6 +29,19 @@ import java.util.Collections;
 public class SignalDataModule extends CodeOnlyModule
 {
     public static final String NAME = "SignalData";
+    public static final String QC_PROVIDER_PROPERTY_NAME = "QCViewProviderModule";
+
+    SignalDataModule()
+    {
+        super();
+
+        ModuleProperty qcViewProperty;
+        qcViewProperty = new ModuleProperty(this, QC_PROVIDER_PROPERTY_NAME);
+        qcViewProperty.setDescription("Name of module that will provide the QC view");
+        qcViewProperty.setCanSetPerContainer(true);
+        qcViewProperty.setDefaultValue("signaldata");
+        addModuleProperty(qcViewProperty);
+    }
 
     @Override
     public String getName()

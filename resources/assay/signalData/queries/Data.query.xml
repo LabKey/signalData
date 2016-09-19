@@ -24,7 +24,7 @@
                 <buttonBarOptions position="both" includeStandardButtons="true">
                     <includeScript>/signaldata/SignalData.js</includeScript>
                     <item insertPosition="end" text="View Selected Runs" requiresSelection="true">
-                        <onClick>LABKEY.SignalData.signalDataSelection(dataRegion, dataRegionName)</onClick>
+                        <onClick>LABKEY.SignalData.signalDataSelection(dataRegion, dataRegionName, 'signaldata')</onClick>
                     </item>
                 </buttonBarOptions>
                 <columns>

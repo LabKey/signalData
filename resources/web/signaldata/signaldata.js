@@ -8,7 +8,7 @@ if (!LABKEY.SignalData) {
 }
 
 LABKEY.SignalData.signalDataSelection = function(dataRegion, dataRegionName) {
-    window.location = LABKEY.ActionURL.buildURL('signaldata', 'qc', null, {
+    window.location = LABKEY.ActionURL.buildURL(LABKEY.getModuleProperty('signaldata', 'QCViewProviderModule'), 'qc', null, {
         selectionKey: dataRegion.selectionKey,
         queryName: dataRegion.queryName,
         schemaName: dataRegion.schemaName,

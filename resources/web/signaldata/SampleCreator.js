@@ -3,6 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+//TODO: this should be renamed
 Ext4.define('LABKEY.SignalData.SampleCreator', {
     extend: 'Ext.panel.Panel',
 
@@ -19,20 +20,6 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
     },
 
     border: false,
-
-    statics: {
-        formStore: undefined,
-        getFormulationStore : function() {
-            if (!LABKEY.SignalData.SampleCreator.formStore) {
-                LABKEY.SignalData.SampleCreator.formStore = Ext4.create('LABKEY.ext4.data.Store', {
-                    schemaName: 'Samples',
-                    queryName: 'Formulations'
-                });
-                LABKEY.SignalData.SampleCreator.formStore.load();
-            }
-            return LABKEY.SignalData.SampleCreator.formStore;
-        }
-    },
 
     initComponent: function() {
 
@@ -230,7 +217,6 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                 }]
             });
 
-            this.on('standardchange', this.onStandardChange, this);
 
             this.on('startqc', function(runs) {
                 //
@@ -248,20 +234,6 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
 
     getSelectedInputResults : function() {
         return this.getInputsSelectionModel().getSelection();
-    },
-
-    onStandardChange : function(standards) {
-        var form = this.getQCForm();
-        if (form) {
-            var val = '', sep = '';
-            for (var s=0; s < standards.length; s++) {
-                val += sep + standards[s].get('name');
-                sep = ', ';
-            }
-            form.getForm().setValues({
-                standardslist: val
-            });
-        }
     },
 
     getQCForm : function() {
@@ -360,121 +332,6 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
         }
     },
 
-    saveQC : function() {
-        if (this.getQCForm().isValid()) {
-            this.runAnalysis();
-            this.saveToAssay(this.getQCForm().getForm());
-        }
-        else {
-            Ext4.defer(function() {
-                this.getForm().clearInvalid();
-            }, 3000, this.getQCForm());
-        }
-    },
-
-    saveToAssay : function(form) {
-        //
-        // Load the target QC assay batch
-        //
-        LABKEY.Experiment.loadBatch({
-            assayId: this.context.SignalDataDefinition.id,
-            success: function(batch) {
-
-                var values = form.getValues();
-                var run = new LABKEY.Exp.Run();
-
-                var formStore = LABKEY.SignalData.SampleCreator.getFormulationStore();
-                var formIdx = formStore.findExact('RowId', parseInt(values['formulationrowid']));
-                var formulationName = formStore.getAt(formIdx).get('Name');
-
-                run.name = formulationName;
-
-                //
-                // Set the run properties
-                //
-                run.properties = {
-                    //
-                    // Lookups
-                    //
-                    "LotNumber": values['formulationrowid'],
-                    "CompoundNumber": values['compoundrowid'],
-                    "StandardInstance": values['standardrowid'],
-                    "StorageTemperature": values['temperature'],
-                    "Time": values['timepoint'],
-
-                    //
-                    // Values
-                    //
-                    "RunDate": values['rundate'], //new Date(values['rundate']),
-                    "Concentration": parseFloat(values['avgconc']),
-                    "StandardDeviation": parseFloat(values['stddev'])
-                };
-
-                //
-                // Set the run.dataRows
-                //
-                var samples = this.qcresultview.getStore().getRange();
-                var dataRows = [];
-
-                Ext4.each(samples, function(sample) {
-                    if (sample.get('include')) {
-                        dataRows.push({
-                            Name: sample.get('name'),
-                            Dilution: 20,
-                            Concentration: sample.get('concentration'),
-                            Xleft: sample.get('xleft'),
-                            XRight: sample.get('xright'),
-                            Base: sample.get('base'),
-                            FilePath: sample.get('expDataRun').pipelinePath
-                        });
-                    }
-                }, this);
-
-                run.dataRows = dataRows;
-                batch.runs.push(run);
-
-                LABKEY.Experiment.saveBatch({
-                    assayId: this.context.SignalDataDefinition.id,
-                    batch: batch,
-                    success: function(b, r) {
-
-                        Ext4.Msg.show({
-                            title: 'Saved',
-                            msg: 'SignalData Run saved successfully.',
-                            buttons: Ext4.Msg.OK
-                        });
-
-                        this.getWest().on('expand', function(west) {
-
-                            Ext4.defer(function() {
-                                this.getInputsSelectionModel().deselectAll();
-                                this.getQCForm().getForm().reset();
-                                Ext4.getCmp('submitactionbtn').setDisabled(true);
-                                this.clearPlot();
-                            }, 200, this);
-
-                        }, this, {single: true});
-
-                        this.getWest().expand();
-
-                        Ext4.defer(function() {
-                            Ext4.Msg.hide();
-                        }, 2000, this);
-                    },
-                    failure: function(r) {
-                        Ext4.Msg.show({
-                            title: 'Failed',
-                            msg: 'Failed to save SignalData Run.',
-                            buttons: Ext4.Msg.OK
-                        });
-                    },
-                    scope: this
-                });
-            },
-            scope: this
-        });
-    },
-
     getEast : function() {
 
         if (!this.eastpanel) {
@@ -544,10 +401,10 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: [{
-                    //    text: 'Calculate',
-                    //    handler: this.runAnalysis,
-                    //    scope: this
-                    //},{
+                       // text: 'Calculate',
+                       // handler: this.runAnalysis,
+                       // scope: this
+                    // },{
                         text: 'Clear Highlight',
                         handler: function() {
                             this.highlighted = undefined;
@@ -580,106 +437,12 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
      */
     onQCResultItemSelect : function(view, model, z, a, evt) {
         if (evt.target && Ext4.isString(evt.target.tagName) && evt.target.tagName.toLowerCase() === "button") {
-            Ext4.Msg.show({
-                msg: 'Copy \'' + model.get('name') + '\' (xleft, right, base) to all other selections?',
-                buttons: Ext4.Msg.YESNO,
-                icon: Ext4.window.MessageBox.INFO,
-                fn: function(b) {
-                    if (b === 'yes') {
-                        this.updateModels(function() {
-
-                            var store = view.getStore();
-                            var _model = store.getAt(store.findExact('name', model.get('name')));
-
-                            var models = store.getRange(),
-                                    n = _model.get('name'),
-                                    xl = _model.get('xleft'),
-                                    xr = _model.get('xright'),
-                                    base = _model.get('base');
-
-                            Ext4.each(models, function(m) {
-                                if (m.get('name') !== n) {
-                                    m.suspendEvents(true);
-                                    m.set('xleft', xl);
-                                    m.set('xright', xr);
-                                    m.set('base', base);
-                                    m.resumeEvents();
-                                }
-                            }, this);
-
-                            this.updateModels(undefined, undefined, _model);
-
-                        }, this);
-                    }
-                },
-                scope: this
-            });
+            this.updateModels();
         }
         else {
             // for some reason, focus is not maintained even after a user clicks an input
             Ext4.defer(function() { Ext4.get(evt.target).dom.focus(); }, 50);
         }
-    },
-
-    /**
-     * The intent of this method is to gather all input sample results and compare them against the
-     * selected standard curve.
-     */
-    runAnalysis : function() {
-
-        this.updateModels(function() {
-            var standardStore = LABKEY.SignalData.StandardCreator.getStandardsStore(this.context);
-
-            //
-            // Determine the selected standard
-            //
-            var standardRowId = this.getQCForm().getValues()['standardrowid'];
-
-            if (Ext4.isNumber(standardRowId)) {
-                var idx = standardStore.findExact('Key', standardRowId);
-
-                var standardModel = standardStore.getAt(idx);
-                var a = standardModel.get('b2');
-                var b = standardModel.get('b1');
-                var c = standardModel.get('b0');
-
-                //
-                // Get the set of qc results
-                //
-                var resultStore = this.qcresultview.getStore(), concs = [];
-                var rcount = resultStore.getCount(), result;
-                for (var r=0; r < rcount; r++) {
-                    result = resultStore.getAt(r);
-
-                    if (result.get('include') === true) {
-
-                        var response = result.get('peakResponse');
-
-                        // calculate concentration
-                        var _c = c - response;
-
-                        var x = LABKEY.SignalData.Stats.getQuadratic(a, b, _c);
-                        var nonDiluted = x[0] * 20; // account for dilution ratio
-                        result.set('concentration', nonDiluted);
-                        concs.push(nonDiluted);
-                    }
-                }
-
-                var mean = 0; var deviation = 0;
-                if (concs.length > 0) {
-                    var computed = LABKEY.SignalData.Stats.average(concs);
-                    mean = computed.mean;
-                    deviation = computed.deviation;
-                }
-
-                Ext4.getCmp('avgconcfield').setValue(mean);
-                Ext4.getCmp('stddevfield').setValue(deviation);
-                Ext4.getCmp('submitactionbtn').setDisabled(false);
-            }
-            else {
-                alert('Please select a standard to base these samples on.');
-            }
-        }, this);
     },
 
     bindCalc : function(view, sample) {
@@ -693,7 +456,7 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
 
     updateModels : function(callback, scope, toCopy) {
         //
-        // Iterate over all QC Results updating there peakResponse based on given values for that row/result
+        // Iterate over all QC Results updating their peakResponse based on given values for that row/result
         //
         if (Ext4.isDefined(this.qcresultview)) {
             var view = this.qcresultview;

@@ -283,9 +283,6 @@ var init = function(assay, row){
             xtype: 'button',
             text: 'Save',
             handler: function () {
-
-                //TODO: check if file is different
-
                 //Generate a form to upload files with
                 var uploadForm;
 
@@ -349,4 +346,3 @@ var init = function(assay, row){
 };
 
 getAssay();
-// Ext4.onReady(getAssay);

@@ -28,32 +28,10 @@ Ext4.define('LABKEY.SignalData.QualityControl', {
         this.add(this.getSampleCreator());
     },
 
-    getStandardCreator : function() {
-        if (!this.stdCreator) {
-            this.stdCreator = Ext4.create('LABKEY.SignalData.StandardCreator', {
-                context: this.context,
-                listeners: {
-                    complete: function() {
-                        this.getLayout().setActiveItem(this.getSampleCreator());
-                    },
-                    scope: this
-                },
-                scope: this
-            });
-        }
-        return this.stdCreator;
-    },
-
     getSampleCreator : function() {
         if (!this.sampleCreator) {
             this.sampleCreator = Ext4.create('LABKEY.SignalData.SampleCreator', {
                 context: this.context,
-                listeners: {
-                    requeststandards: function() {
-                        this.getLayout().setActiveItem(this.getStandardCreator());
-                    },
-                    scope: this
-                },
                 scope: this
             });
         }

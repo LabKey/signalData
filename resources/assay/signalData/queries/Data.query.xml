@@ -22,7 +22,7 @@
             <table tableName="Data" tableDbType="TABLE">
                 <updateUrl>/signaldata/update.view?protocolId=${Run/Protocol/RowId}&amp;batchId=${Run/Batch/RowId}&amp;runId=${Run/RowId}&amp;rowId=${RowId}&amp;runName=${Run/Name}</updateUrl>
                 <buttonBarOptions position="both" includeStandardButtons="true">
-                    <includeScript>/signaldata/SignalData.js</includeScript>
+                    <includeScript>/signaldata/QCView/SignalData.js</includeScript>
                     <item insertPosition="end" text="View Selected Runs" requiresSelection="true">
                         <onClick>LABKEY.SignalData.signalDataSelection(dataRegion, dataRegionName, 'signaldata')</onClick>
                     </item>

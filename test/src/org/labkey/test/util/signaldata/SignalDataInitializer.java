@@ -67,9 +67,8 @@ public class SignalDataInitializer
     private void mockUploadRunData()
     {
         _test.beginAt("/" + _project + "/signaldata-mockSignalDataWatch.view");
-        _test.waitForText("Ready to Load");
+        _test.waitForElement(Locator.tag("li").withText("Ready to Load"));
         _test.click(Locator.tagWithClass("input", "signaldata-run-btn"));
-        // Can't just waitForText, as this text is in javascript embedded in the HTML source of the page
         _test.waitForElement(Locator.tagWithText("li", "Test Run Upload Complete"));
     }
 }

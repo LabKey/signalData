@@ -210,6 +210,12 @@ Ext4.define('LABKEY.SignalData.DataService', {
                                 }
                             }
 
+                            var dataNames = {};
+                            if(context.DataNames)
+                                context.DataNames.forEach(function(name){
+                                    dataNames[name] = true;
+                                });
+
                             for (var k = 0; k < filteredRuns.length; k++)
                             {
                                 var run = filteredRuns[k];
@@ -217,13 +223,8 @@ Ext4.define('LABKEY.SignalData.DataService', {
 
                                 for (var r = 0; r < run.dataRows.length; r++)
                                 {
-                                    var isValidData = false;
-                                    for (var ind = 0; ind < context.DataNames.length; ind++){
-                                        if (context.DataNames[ind] == run.dataRows[r]['Name']) {
-                                            isValidData = true;
-                                            break;
-                                        }
-                                    }
+                                    //If DataNames is null, all files should be used.
+                                    var isValidData = context.DataNames == null || dataNames[run.dataRows[r]['Name']];
                                     if (!isValidData) {
                                         continue;
                                     }

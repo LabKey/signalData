@@ -2,10 +2,6 @@
 
 ####This module is is under active development and may migrate to a new and more generalized module in the near future.####
 
-# SignalData
-
-####This module is is under active development and may migrate to a new and more generalized module in the near future.####
-
 ### Basic Setup: ###
 
 1. Create a LabKey Assay Project/Folder
@@ -74,6 +70,6 @@ Enter values in the right pane to calucluate areas under the curves. Select in t
 
 ## Installing the Signal Data Module ##
 
-[Contact us](https://www.labkey.com/company/contact-us) for details on installing the HPLC module.
+[Contact us](https://www.labkey.com/company/contact-us) for details on installing the Signal Data module.
 
 

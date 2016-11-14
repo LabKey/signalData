@@ -38,7 +38,7 @@ To manually upload result files, follow these instructions:
 
 1. Click the **Save Run** button.
 
-![Name and save a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=hplc2.png)
+![Name and save a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal4.png)
 
 ## View Results ##
 

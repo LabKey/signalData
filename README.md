@@ -2,7 +2,7 @@
 
 ####This module is is under active development and may migrate to a new and more generalized module in the near future.####
 
-### Basic Setup: ###
+## Basic Setup ##
 
 1. Create a LabKey Assay Project/Folder
   1. Hover over the Project or Folder menu, and click **Create Project** or **Create Subfolder**.
@@ -17,10 +17,14 @@
   1.  Name is the only required field. (Design default values should work fine.)
   1.  Click the **Save & Close** button.
 
+## Manual Import of Signal Data Results ##
 
-### Manual Import Signal Data Results ###
+Importing data is a two step process:
 
-To manually upload result files, follow these instructions: 
+1. Upload the metadata file. (An example metadata file is available at: https://github.com/LabKey/signalData/blob/develop/test/sampledata/signaldata/RunsMetadata/datafiles.tsv)
+1. Drag and drop the data files (Example data files are available at: https://github.com/LabKey/signalData/tree/develop/test/sampledata/signaldata/SignalDataAssayData/TestRun001)
+
+### Metadata Upload ### 
 
 1. Go to the folder where you wish to upload results.
 1. Add the **Signal Data Upload** webpart.
@@ -31,7 +35,9 @@ To manually upload result files, follow these instructions:
 1. Specify a Run Identifier (required).
 
 ![Drag-and-drop to upload a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal2.png)
- 
+
+### Data Upload ###
+
 1. Drag-and-drop any result files you want to import onto the dropzone.
 
 ![Drag-and-drop to upload a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal3.png)

@@ -24,7 +24,7 @@ Importing data is a two step process:
 1. Upload the metadata file. (An example metadata file is available at: https://github.com/LabKey/signalData/blob/develop/test/sampledata/signaldata/RunsMetadata/datafiles.tsv)
 1. Drag and drop the data files (Example data files are available at: https://github.com/LabKey/signalData/tree/develop/test/sampledata/signaldata/SignalDataAssayData/TestRun001)
 
-### Metadata Upload ### 
+### Metadata Upload
 
 1. Go to the folder where you wish to upload results.
 1. Add the **Signal Data Upload** webpart.
@@ -36,7 +36,7 @@ Importing data is a two step process:
 
 ![Drag-and-drop to upload a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal2.png)
 
-### Data Upload ###
+### Data Upload
 
 1. Drag-and-drop any result files you want to import onto the dropzone.
 

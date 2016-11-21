@@ -1,7 +1,5 @@
 # SignalData
 
-####This module is is under active development ####
-
 ## Basic Setup ##
 
 1. Create a LabKey Assay Project/Folder

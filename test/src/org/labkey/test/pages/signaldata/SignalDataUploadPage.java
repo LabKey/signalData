@@ -17,10 +17,13 @@ package org.labkey.test.pages.signaldata;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.components.ext4.Window;
 import org.labkey.test.util.Ext4Helper;
 import org.openqa.selenium.Keys;
 
 import java.io.File;
+
+import static org.labkey.test.components.ext4.Window.Window;
 
 public class SignalDataUploadPage
 {
@@ -31,6 +34,7 @@ public class SignalDataUploadPage
     public SignalDataUploadPage(BaseWebDriverTest test)
     {
         _test = test;
+        waitForInitialState();
     }
 
     public void uploadMetadataFile(File file)
@@ -65,16 +69,18 @@ public class SignalDataUploadPage
         _test.waitForFormElementToEqual(Locators.runIdentifier, runName);
     }
 
-    public void waitForPageLoad()
+    private void waitForInitialState()
     {
-        _test.waitForElement(SignalDataUploadPage.Locators.metadataFileInput, 1000);
+        _test.waitForElement(SignalDataUploadPage.Locators.metadataFileInput.notHidden(), 1000);
     }
 
     public void clearRun()
     {
         _test.clickButton(CLEAR_BUTTON, 0);
-        _test._ext4Helper.clickWindowButton("Clear Run", "Yes", 0, 0);
+        final Window clearConfirm = Window(_test.getDriver()).withTitle("Clear Run").waitFor();
+        clearConfirm.clickButton("Yes", true);
         _test.waitForElementToDisappear(Ext4Helper.Locators.getGridRow()); //Check grid is cleared
+        waitForInitialState();
     }
 
     public void saveRun()
@@ -102,7 +108,6 @@ public class SignalDataUploadPage
 
         /**
          * @param filename of row to find
-         * @return
          */
         static Locator.XPathLocator fileLogDeleteCell(String filename) {
             return Locator.tagWithAttribute("tr","role", "row").withDescendant(Locator.xpath("//*[text()='" + filename + "']"))

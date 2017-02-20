@@ -111,9 +111,7 @@ public class SignalDataAssayBeginPage
     public SignalDataUploadPage navigateToImportPage()
     {
         _test.clickButton("Import Data");
-        SignalDataUploadPage page = new SignalDataUploadPage(_test);
-        page.waitForPageLoad();
-        return page;
+        return new SignalDataUploadPage(_test);
     }
 
     public SignalDataRunViewerPage viewRuns()

@@ -167,10 +167,7 @@ public class SignalDataRawTest extends BaseWebDriverTest
         uploadPage.setRunIDField(runName);
         assertElementPresent(Ext4Helper.Locators.getGridRow()); //Check grid has elements
         uploadPage.clearRun();
-        uploadPage.waitForPageLoad();
         navigateToAssayLandingPage();  //Should not cause unload warning
-
-
 
         setPipelineRoot(SignalDataInitializer.RAW_SignalData_SAMPLE_DATA);
     }

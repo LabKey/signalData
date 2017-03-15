@@ -15,7 +15,7 @@
         <ant antfile="${basedir}/distributions/legacy.xml" target="gather_modules" />
         <copy todir="${dist.modules.dir}">
             <filelist dir="${staging.modules.dir}">
-                <file name="HPLC.module" />
+                <file name="signalData.module" />
             </filelist>
         </copy>
     </target>

@@ -28,21 +28,21 @@ Importing data is a two step process:
 1. Add the **Signal Data Upload** webpart.
 1. Confirm that **File** is selected, and click **Upload TXT, TSV, XLS, XLSX**.
 
-![Drag-and-drop to upload a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal1.png)
+![Drag-and-drop to upload a run](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=signal1.png)
 
 1. Specify a Run Identifier (required).
 
-![Drag-and-drop to upload a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal2.png)
+![Drag-and-drop to upload a run](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=signal2.png)
 
 ### Data Upload
 
 1. Drag-and-drop any result files you want to import onto the dropzone.
 
-![Drag-and-drop to upload a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal3.png)
+![Drag-and-drop to upload a run](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=signal3.png)
 
 1. Click the **Save Run** button.
 
-![Name and save a run](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=signal4.png)
+![Name and save a run](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=signal4.png)
 
 ## View Results ##
 
@@ -53,24 +53,24 @@ To view chromatograms for the results, follow these instructions:
 1. Select the run(s) you want to look at, using the checkboxes.
 1. Click **View Selected Runs**.
 
-![View runs](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=hplc3.png) 
+![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc3.png) 
 
 1. Select the data run(s) you wish to view from the left.
 1. Click the `Overlay Selected` button.
 
-![View runs](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=hplc4.png) 
+![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc4.png) 
 
 1. The left selection pane will close, and the overlayed results will be displayed in the center pane.
 
-![View runs](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=hplc5.png) 
+![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc5.png) 
 
 1. You can zoom into the graph by entering values in the **Time** and **mV Range** text boxes, or by drawing a new area inside the graph using the mouse.
 
-![View runs](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=hplc6.png) 
+![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc6.png) 
 
 Enter values in the right pane to calucluate areas under the curves. Select in the name column to highlight different graph lines.
 
-![View runs](https://www.labkey.org/wiki/home/Documentation/download.view?entityId=303de39a-f9df-1033-93d6-a3afb15978a8&name=hplc7.png) 
+![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc7.png) 
 
 ## Installing the Signal Data Module ##
 

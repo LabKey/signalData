@@ -258,11 +258,11 @@ var init = function(assay, row){
                         callback.call(scope || this, context);
                     }
                     else {
-                        alert('Failed to load the pipeline context for Signal Data');
+                        Ext4.Msg.alert('Error', 'Failed to load the pipeline context for Signal Data');
                     }
                 },
                 failure: function (error, response) {
-                    alert('Failed to load the pipeline context for Signal Data');
+                    Ext4.Msg.alert('Error', 'Failed to load the pipeline context for Signal Data');
                 }
             });
         }

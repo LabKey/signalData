@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2016 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
@@ -234,8 +234,15 @@ Ext4.define('LABKEY.SignalData.DataService', {
                                     name = name[0];
                                     var filePath = "";
                                     var dataFile = run.dataRows[r]['DataFile'];
-                                    var fileName = dataFile.split('/').pop();  //Hack to make fileLink and pipe resolve file
-                                    filePath = context.pipe + "/" + runIdentifier + "/" + fileName;
+
+                                    var osDelimiter = '/';
+                                    var fileName = dataFile.split(osDelimiter).pop();  //Hack to make fileLink and pipe resolve file
+                                    if (fileName == dataFile) { //Filename wasn't parsed correctly
+                                        //Check if windows delimiter
+                                        osDelimiter = '\\';
+                                        fileName = dataFile.split(osDelimiter).pop();
+                                    }
+                                    filePath = context.pipe + osDelimiter + runIdentifier + osDelimiter + fileName;
 
                                     //
                                     // Link the associated LABKEY.Exp.Data object (the data file)

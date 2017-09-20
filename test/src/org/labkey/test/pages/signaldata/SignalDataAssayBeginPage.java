@@ -81,8 +81,11 @@ public class SignalDataAssayBeginPage
         }
         if (somethingToDelete)
         {
-            _test.clickButton("Delete", 0);
-            _test.acceptAlert();
+            _test.doAndWaitForPageToLoad(() ->
+            {
+                table.clickHeaderButton("Delete");
+                _test.acceptAlert();
+            });
         }
 
         // TODO: Validate the delete?

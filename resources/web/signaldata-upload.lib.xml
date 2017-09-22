@@ -6,11 +6,8 @@
         <script path="signaldata/UploadView/uploadResultDataForm.js"/>
     </library>
     <dependencies>
-        <dependency path="Ext4"/>
         <dependency path="Ext4ClientApi"/>
-        <dependency path="Dropzone"/>
         <dependency path="File"/>
-        <dependency path="internal-FileDrop"/>
-        <dependency path="FileUploadField.js"/>
+        <!--<dependency path="FileUploadField.js"/>-->
     </dependencies>
 </libraries>

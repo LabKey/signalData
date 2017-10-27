@@ -39,7 +39,6 @@ import static org.junit.Assert.assertEquals;
 @Category({SignalData.class, Git.class})
 public class SignalDataRawTest extends BaseWebDriverTest
 {
-    {setIsBootstrapWhitelisted(true);}
     private static final String PROJECT_NAME = "SignalDataRawTest";
     private static final String DEFAULT_RUN = "TestRun001";
     private static final String ASSAY_DATA_LOC = "SignalDataAssayData/" + DEFAULT_RUN;

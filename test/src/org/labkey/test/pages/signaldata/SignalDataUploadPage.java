@@ -71,7 +71,7 @@ public class SignalDataUploadPage
 
     private void waitForInitialState()
     {
-        _test.waitForElement(SignalDataUploadPage.Locators.metadataFileInput.notHidden(), 1000);
+        _test.waitForElement(SignalDataUploadPage.Locators.metadataFileInput.notHidden(), 5000);
     }
 
     public void clearRun()

@@ -30,6 +30,7 @@ public class SignalDataModule extends CodeOnlyModule
 {
     public static final String NAME = "SignalData";
     public static final String QC_PROVIDER_PROPERTY_NAME = "QCViewProviderModule";
+    public static final String QC_QUERY_PROPERTY_NAME = "BeginViewQuery";
 
     SignalDataModule()
     {
@@ -41,6 +42,13 @@ public class SignalDataModule extends CodeOnlyModule
         qcViewProperty.setCanSetPerContainer(true);
         qcViewProperty.setDefaultValue("signaldata");
         addModuleProperty(qcViewProperty);
+
+        //TODO: Should be an assay-level property
+        ModuleProperty beginViewProperty = new ModuleProperty(this, QC_QUERY_PROPERTY_NAME);
+        beginViewProperty.setDescription("Where should the view for Signal Data assays start: Runs or Datas");
+        beginViewProperty.setCanSetPerContainer(true);
+        beginViewProperty.setDefaultValue("Data");
+        addModuleProperty(beginViewProperty);
     }
 
     @Override

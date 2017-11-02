@@ -16,11 +16,14 @@
                 })
             }));
 
+            //TODO: This should be assay-level or user-level property
+            var useRuns = LABKEY.getModuleProperty('signaldata', 'BeginViewQuery') == 'Runs';
+
             // Initialize the display grid
             var qwp = new LABKEY.QueryWebPart({
                 renderTo: 'runsResult',
                 schemaName: LABKEY.page.assay.protocolSchemaName,
-                queryName: 'Data',
+                queryName: useRuns ? 'Runs' : 'Data',
                 frame: 'none'
             });
 

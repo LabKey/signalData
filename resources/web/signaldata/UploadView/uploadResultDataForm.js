@@ -105,6 +105,10 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
                 buttonConfig: {
                     text: 'Upload txt, tsv, xls, xlsx'
                 }
+            }, {
+                xtype: 'hidden',
+                name: 'X-LABKEY-CSRF',
+                value: LABKEY.CSRF
             }],
             listeners: {
                 actioncomplete : function (form, action) {
@@ -129,6 +133,10 @@ LABKEY.SignalData.initializeUploadForm = function(metadataFormElId, metadataFile
                 minHeight: 300,
                 width: 400,
                 minWidth:150
+            }, {
+                xtype: 'hidden',
+                name: 'X-LABKEY-CSRF',
+                value: LABKEY.CSRF
             }],
             submit:function(){
                 LABKEY.Ajax.request({

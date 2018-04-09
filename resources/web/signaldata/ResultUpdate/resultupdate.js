@@ -130,7 +130,7 @@ var init = function(assay, row){
         };
 
         if (dataFiles)
-            newRow.DataFile = decodeURI(dataFiles['DataFileUrl']).replace('file:','');
+            newRow.DataFile = decodeURI(dataFiles['DataFileUrl']).replace( new RegExp('^file:/+'), '/');
 
 
         var fieldValues = form.getForm().getFieldValues(true);

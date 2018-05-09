@@ -396,7 +396,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
                     callback.call(scope, options);
             },
             failure: function () {
-                alert("Couldn't generate working directory");
+                Ext4.Msg.alert("Error", "Couldn't generate working directory");
             },
             scope: scope
         }, scope);

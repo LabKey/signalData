@@ -68,7 +68,7 @@ To view chromatograms for the results, follow these instructions:
 
 ![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc6.png) 
 
-Enter values in the right pane to calucluate areas under the curves. Select in the name column to highlight different graph lines.
+Enter values in the right pane to calculate areas under the curves. Select in the name column to highlight different graph lines.
 
 ![View runs](https://www.labkey.org/wiki/Documentation/download.view?entityId=32d6f33e-ed56-1034-b734-fe851e088836&name=hplc7.png) 
 

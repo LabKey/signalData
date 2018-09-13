@@ -17,9 +17,11 @@ package org.labkey.test.pages.signaldata;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.components.ext4.Window;
 import org.labkey.test.util.Ext4Helper;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 
@@ -65,8 +67,11 @@ public class SignalDataUploadPage
 
     public void setRunIDField(String runName)
     {
-        _test.setFormElement(Locators.runIdentifier, runName);
-        _test.waitForFormElementToEqual(Locators.runIdentifier, runName);
+        WebElement runIdField = Locators.runIdentifier.findElement(_test.getDriver());
+        _test.setFormElement(runIdField, runName);
+        _test.waitForFormElementToEqual(runIdField, runName);
+        _test.fireEvent(runIdField, WebDriverWrapper.SeleniumEvent.blur);
+        WebDriverWrapper.waitFor(() -> !runIdField.getAttribute("class").contains("invalid"), 1000);
     }
 
     private void waitForInitialState()
@@ -85,15 +90,16 @@ public class SignalDataUploadPage
 
     public void saveRun()
     {
-        _test.clickButton("Save Run", 0);
+        _test.clickAndWait(Locators.saveButton);
     }
 
     private static class Locators
     {
-        static final Locator.XPathLocator runIdentifier = Locator.tagWithAttributeContaining("input", "id","RunIdentifier").notHidden();
+        static final Locator.XPathLocator runIdentifier = Locator.input("RunIdentifier").notHidden();
         static final Locator.XPathLocator metadataFileInput = Locator.tagWithAttribute("input", "type", "file").withoutAttribute("multiple", "multiple");
         static final Locator.XPathLocator dropFileInput = Locator.tagWithAttribute("input", "type", "file").withAttribute("multiple", "multiple");
         static final Locator.XPathLocator uploadMetadataButton = Locator.tagWithAttribute("a", "role", "button").withDescendant(Locator.tag("span").withText("next"));
+        static final Locator saveButton = Ext4Helper.Locators.ext4Button("Save Run");
 
         static Locator.XPathLocator fileLogCellwithText(String text)
         {

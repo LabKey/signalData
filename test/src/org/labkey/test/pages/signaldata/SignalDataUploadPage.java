@@ -90,6 +90,8 @@ public class SignalDataUploadPage
 
     public void saveRun()
     {
+        WebElement saveButton = Locators.saveButton.findElement(_test.getDriver());
+        WebDriverWrapper.waitFor(() -> !saveButton.getAttribute("class").contains("disabled"), "Unable to save, button is disabled", 1000);
         _test.clickAndWait(Locators.saveButton);
     }
 

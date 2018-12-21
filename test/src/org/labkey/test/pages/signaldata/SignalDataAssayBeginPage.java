@@ -81,7 +81,12 @@ public class SignalDataAssayBeginPage
         }
         if (somethingToDelete)
         {
-            table.deleteSelectedRows();
+            // TODO: Should use DRT.deleteSelectedRows() but the assay runs returnUrl is mangled
+            _test.doAndWaitForPageToLoad(() ->
+            {
+                table.clickHeaderButton("Delete");
+                _test.acceptAlert();
+            });
         }
 
         // TODO: Validate the delete?

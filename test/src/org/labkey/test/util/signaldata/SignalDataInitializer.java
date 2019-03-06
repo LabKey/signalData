@@ -18,8 +18,11 @@ package org.labkey.test.util.signaldata;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
-import org.labkey.test.WebDriverWrapper;
+import org.labkey.test.pages.AssayDesignerPage;
 import org.labkey.test.util.LogMethod;
+import org.labkey.test.util.core.webdav.WebDavUploadHelper;
+
+import java.io.File;
 
 public class SignalDataInitializer
 {
@@ -29,7 +32,7 @@ public class SignalDataInitializer
     public static final String RAW_SignalData_ASSAY = "RawSignalData";
     public static final String RAW_SignalData_DESC = "SignalData Raw Assay Data";
 
-    public static final String RAW_SignalData_SAMPLE_DATA = TestFileUtils.getSampleData("signaldata").getPath();
+    public static final File RAW_SignalData_SAMPLE_DATA = TestFileUtils.getSampleData("signaldata");
 
     public SignalDataInitializer(BaseWebDriverTest test, String projectName)
     {
@@ -55,27 +58,15 @@ public class SignalDataInitializer
         _test.goToProjectHome();
 
         _test.log("Defining Raw SignalData Assay");
-        _test.clickAndWait(Locator.linkWithText("Manage Assays"));
-        _test.clickButton("New Assay Design");
+        _test.goToManageAssays();
 
-        _test.assertTextPresent("SignalData");
-        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", "Signal Data"));
-        _test.clickButton("Next");
+        AssayDesignerPage assayDesigner = _test._assayHelper.createAssayAndEdit("Signal Data", RAW_SignalData_ASSAY);
+        assayDesigner.setDescription(RAW_SignalData_DESC);
+        assayDesigner.setEditableRuns(true);
+        assayDesigner.setEditableResults(true);
+        assayDesigner.saveAndClose();
 
-        _test.waitForElement(Locator.xpath("//input[@id='AssayDesignerName']"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
-        _test.setFormElement(Locator.xpath("//input[@id='AssayDesignerName']"), RAW_SignalData_ASSAY);
-        _test.setFormElement(Locator.xpath("//textarea[@id='AssayDesignerDescription']"), RAW_SignalData_DESC);
-        _test.fireEvent(Locator.xpath("//input[@id='AssayDesignerName']"), WebDriverWrapper.SeleniumEvent.blur);
-
-        // Make Runs/Results editable
-        _test.checkCheckbox(Locator.checkboxByName("editableRunProperties"));
-        _test.checkCheckbox(Locator.checkboxByName("editableResultProperties"));
-
-        _test.clickButton("Save", 0);
-        _test.waitForText(10000, "Save successful.");
-        _test.clickButton("Save & Close");
-
-        _test.setPipelineRoot(RAW_SignalData_SAMPLE_DATA);
+        new WebDavUploadHelper(_test.getPrimaryTestProject()).uploadDirectoryContents(RAW_SignalData_SAMPLE_DATA);
     }
 
     @LogMethod

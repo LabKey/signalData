@@ -121,9 +121,6 @@ public class SignalDataRawTest extends BaseWebDriverTest
     {
         final File METADATA_FILE = getFile("RunsMetadata/datafiles.tsv");
 
-        // Reset pipeline root so we aren't dumping files into the sampledata directory
-        setPipelineRootToDefault();
-
         SignalDataAssayBeginPage beginPage = navigateToAssayLandingPage();
         SignalDataUploadPage uploadPage = beginPage.navigateToImportPage();
 
@@ -131,9 +128,10 @@ public class SignalDataRawTest extends BaseWebDriverTest
         uploadPage.uploadMetadataFile(METADATA_FILE);
         log("Uploading data files");
         int uploadCount = 3;
-        uploadPage.uploadFile(getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_1));
-        uploadPage.uploadFile(getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_2));
-        uploadPage.uploadFile(getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_3));
+        uploadPage.uploadFile(
+                getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_1),
+                getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_2),
+                getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_3));
         log("Attempting to upload a data file not specified in metadata");
         uploadPage.uploadIncorrectFile(getFile(ASSAY_DATA_LOC + "/" + "BLANK235.TXT"));
 
@@ -168,8 +166,6 @@ public class SignalDataRawTest extends BaseWebDriverTest
         assertElementPresent(Ext4Helper.Locators.getGridRow()); //Check grid has elements
         uploadPage.clearRun();
         navigateToAssayLandingPage();  //Should not cause unload warning
-
-        setPipelineRoot(SignalDataInitializer.RAW_SignalData_SAMPLE_DATA);
     }
 
     private File getFile(String relativePath)

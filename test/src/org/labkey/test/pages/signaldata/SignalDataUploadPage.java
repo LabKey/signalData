@@ -24,6 +24,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static org.labkey.test.components.ext4.Window.Window;
 
@@ -46,9 +47,10 @@ public class SignalDataUploadPage
         _test.waitForElement(Locators.runIdentifier);
     }
 
-    public void uploadFile(File file)
+    public void uploadFile(File... file)
     {
-        _test.setFormElement(SignalDataUploadPage.Locators.dropFileInput, file);
+        WebElement dropFileInputEl = Locators.dropFileInput.findElement(_test.getDriver());
+        _test.setDropZone(dropFileInputEl, Arrays.asList(file));
     }
 
     public void uploadIncorrectFile(File file)

@@ -29,6 +29,7 @@ import org.labkey.test.pages.signaldata.SignalDataRunViewerPage;
 import org.labkey.test.pages.signaldata.SignalDataUploadPage;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.signaldata.SignalDataInitializer;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.util.Collections;
@@ -107,7 +108,9 @@ public class SignalDataRawTest extends BaseWebDriverTest
 
         runsPage.checkRunViewerCheckbox(resultNameFromFilename(RESULT_FILENAME_1));
         runsPage.checkRunViewerCheckbox(resultNameFromFilename(RESULT_FILENAME_2));
-        runsPage.showPlot();
+        WebElement plotEl = runsPage.showPlot();
+        List<WebElement> plotLines = Locator.tagWithClass("path", "line").findElements(plotEl);
+        assertEquals("Wrong number of lines in plot", 2, plotLines.size());
     }
 
     private String resultNameFromFilename(String filename)

@@ -15,36 +15,37 @@
  */
 package org.labkey.test.pages.signaldata;
 
-import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.WebDriverWrapper;
+import org.labkey.test.pages.LabKeyPage;
+import org.openqa.selenium.WebElement;
 
 /**
  * User: tgaluhn
  * Date: 9/6/2016
  */
-public class SignalDataRunViewerPage
+public class SignalDataRunViewerPage extends LabKeyPage
 {
-    private BaseWebDriverTest _test;
-
-    public SignalDataRunViewerPage(BaseWebDriverTest test)
+    public SignalDataRunViewerPage(WebDriverWrapper test)
     {
-        _test = test;
+        super(test);
     }
 
     public void waitForPageLoad()
     {
-        _test.waitForElement(Locator.xpath("//*[contains(@id,'startqcbtn')]"));
+        waitForElement(Locator.id("startqcbtn"));
     }
 
     public void checkRunViewerCheckbox(String resultName)
     {
-        _test._ext4Helper.checkGridRowCheckbox(resultName);
+        _ext4Helper.checkGridRowCheckbox(resultName);
     }
 
-    public void showPlot()
+    public WebElement showPlot()
     {
-        _test.clickButton("Overlay Selected", 0);
-        _test.waitForElementToDisappear(Locator.id("sampleinputs").notHidden());
-        _test.assertElementPresent(Locator.xpath("//*[@id='plotarea']//*[local-name() = 'path'][@class='line']"));
+        return doAndWaitForElementToRefresh(() -> {
+            clickButton("Overlay Selected", 0);
+            waitForElementToDisappear(Locator.id("sampleinputs").notHidden());
+        }, Locator.tag("svg"), shortWait());
     }
 }

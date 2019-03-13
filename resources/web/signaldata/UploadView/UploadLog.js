@@ -295,7 +295,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
             files.forEach(function (file) {
                 LABKEY.Ajax.request({
                     url: LABKEY.ActionURL.buildURL('SignalData', 'getSignalDataResource.api'),
-                    method: 'GET',
+                    method: 'POST',
                     params: {path: file.id, test: true},
                     success: function (response) {
                         done(file, Ext4.decode(response.responseText));

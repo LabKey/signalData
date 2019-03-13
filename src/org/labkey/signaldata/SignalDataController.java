@@ -18,6 +18,7 @@ package org.labkey.signaldata;
 
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
+import org.labkey.api.action.MutatingApiAction;
 import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
@@ -123,7 +124,7 @@ public class SignalDataController extends SpringActionController
 
 
     @RequiresPermission(ReadPermission.class)
-    public class getSignalDataResourceAction extends ReadOnlyApiAction<SignalDataResourceForm>
+    public class getSignalDataResourceAction extends MutatingApiAction<SignalDataResourceForm>
     {
         @Override
         public ApiResponse execute(SignalDataResourceForm form, BindException errors) throws Exception

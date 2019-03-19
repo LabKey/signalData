@@ -57,7 +57,7 @@ var init = function(assay, row){
             var file = dataFiles[0];
             LABKEY.Ajax.request({
                 url: LABKEY.ActionURL.buildURL('SignalData', 'getSignalDataResource.api'),
-                method: 'GET',
+                method: 'POST',
                 params: {path: file.internalId, test: true},
                 success: function (response) {
                     var fileResource = Ext4.decode(response.responseText);

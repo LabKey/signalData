@@ -16,9 +16,10 @@
 
 package org.labkey.signaldata;
 
-import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
+import org.labkey.api.action.MutatingApiAction;
+import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.RuntimeSQLException;
@@ -65,7 +66,7 @@ public class SignalDataController extends SpringActionController
      * Meant to mimic PipelineController.getPipelineContainerAction but with the incorporated SignalData path context
      */
     @RequiresPermission(ReadPermission.class)
-    public class getSignalDataPipelineContainerAction extends ApiAction
+    public class getSignalDataPipelineContainerAction extends ReadOnlyApiAction
     {
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
@@ -123,7 +124,7 @@ public class SignalDataController extends SpringActionController
 
 
     @RequiresPermission(ReadPermission.class)
-    public class getSignalDataResourceAction extends ApiAction<SignalDataResourceForm>
+    public class getSignalDataResourceAction extends MutatingApiAction<SignalDataResourceForm>
     {
         @Override
         public ApiResponse execute(SignalDataResourceForm form, BindException errors) throws Exception

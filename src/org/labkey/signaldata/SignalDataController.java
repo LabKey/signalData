@@ -35,7 +35,6 @@ import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.security.RequiresPermission;
 import org.labkey.api.security.permissions.ReadPermission;
-import org.labkey.api.services.ServiceRegistry;
 import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.UnexpectedException;
 import org.labkey.api.webdav.WebdavResource;
@@ -54,7 +53,7 @@ import java.util.Map;
 public class SignalDataController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(SignalDataController.class);
-    public static final String NAME = "signaldata";
+    static final String NAME = "signaldata";
 
     public SignalDataController()
     {
@@ -164,7 +163,7 @@ public class SignalDataController extends SpringActionController
 
                 if (null != data)
                 {
-                    TableInfo ti = ExpSchema.TableType.Data.createTable(new ExpSchema(getUser(), c), ExpSchema.TableType.Data.toString());
+                    TableInfo ti = ExpSchema.TableType.Data.createTable(new ExpSchema(getUser(), c), ExpSchema.TableType.Data.toString(), null);
                     QueryUpdateService qus = ti.getUpdateService();
 
                     try

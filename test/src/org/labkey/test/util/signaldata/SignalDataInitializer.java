@@ -18,7 +18,7 @@ package org.labkey.test.util.signaldata;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
-import org.labkey.test.pages.AssayDesignerPage;
+import org.labkey.test.pages.ReactAssayDesignerPage;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.core.webdav.WebDavUploadHelper;
 
@@ -60,11 +60,11 @@ public class SignalDataInitializer
         _test.log("Defining Raw SignalData Assay");
         _test.goToManageAssays();
 
-        AssayDesignerPage assayDesigner = _test._assayHelper.createAssayAndEdit("Signal Data", RAW_SignalData_ASSAY);
+        ReactAssayDesignerPage assayDesigner = _test._assayHelper.createAssayDesign("Signal Data", RAW_SignalData_ASSAY);
         assayDesigner.setDescription(RAW_SignalData_DESC);
         assayDesigner.setEditableRuns(true);
         assayDesigner.setEditableResults(true);
-        assayDesigner.saveAndClose();
+        assayDesigner.clickFinish();
 
         new WebDavUploadHelper(_test.getPrimaryTestProject()).uploadDirectoryContents(RAW_SignalData_SAMPLE_DATA);
     }

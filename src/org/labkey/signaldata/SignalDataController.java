@@ -67,6 +67,7 @@ public class SignalDataController extends SpringActionController
     @RequiresPermission(ReadPermission.class)
     public class getSignalDataPipelineContainerAction extends ReadOnlyApiAction
     {
+        @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
             ApiSimpleResponse resp = new ApiSimpleResponse();

@@ -282,7 +282,7 @@ var init = function(assay, row){
             xtype: 'button',
             text: 'Cancel',
             handler: function () {
-                window.location = LABKEY.ActionURL.getParameter('returnUrl');
+                window.location = LABKEY.ActionURL.getReturnUrl();
             }
         }, {
             xtype: 'button',
@@ -346,7 +346,7 @@ var init = function(assay, row){
     }, form);
 
     var navToReturnURL = function(){
-        window.location = LABKEY.ActionURL.getParameter('returnUrl');
+        window.location = LABKEY.ActionURL.getReturnUrl();
     };
 };
 

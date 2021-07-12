@@ -24,7 +24,6 @@ import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.exp.api.DataType;
 import org.labkey.api.exp.api.ExpData;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.query.ExpDataTable;
@@ -49,6 +48,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.labkey.api.files.FileContentService.UPLOADED_FILE;
 
 public class SignalDataController extends SpringActionController
 {
@@ -145,7 +146,7 @@ public class SignalDataController extends SpringActionController
                     File file = resource.getFile();
                     if (null != file)
                     {
-                        data = ExperimentService.get().createData(c, new DataType("UploadedFile"));
+                        data = ExperimentService.get().createData(c, UPLOADED_FILE);
                         data.setName(file.getName());
                         data.setDataFileURI(file.toURI());
 

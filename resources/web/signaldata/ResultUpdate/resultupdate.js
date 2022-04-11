@@ -34,7 +34,12 @@ var getResultData = function(assay) {
         requiredVersion: 13.2,
         filterArray: [LABKEY.Filter.create('RowId', LABKEY.ActionURL.getParameter('rowId'))],
         success: function(results){
-            init(assay, results.getRow(0));
+            if (results.length > 0) {
+                init(assay, results.getRow(0));
+            }
+            else {
+                alert("Row not found");
+            }
         },
         scope: this
     });

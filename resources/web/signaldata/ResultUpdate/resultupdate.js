@@ -38,7 +38,8 @@ var getResultData = function(assay) {
                 init(assay, results.getRow(0));
             }
             else {
-                alert("Row not found");
+                // Use an ExtJS alert instead of a raw browser alert to avoid alarming the crawler
+                Ext4.Msg.alert('Error', 'Row not found');
             }
         },
         scope: this

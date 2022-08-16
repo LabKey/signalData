@@ -50,7 +50,7 @@ public class SignalDataUploadPage
     public void uploadFile(File... file)
     {
         WebElement dropFileInputEl = Locators.dropFileInput.findElement(_test.getDriver());
-        _test.setDropZone(dropFileInputEl, Arrays.asList(file));
+        _test.setInput(dropFileInputEl, Arrays.asList(file));
     }
 
     public void uploadIncorrectFile(File file)

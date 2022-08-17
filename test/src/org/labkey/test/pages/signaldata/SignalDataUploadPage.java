@@ -22,6 +22,7 @@ import org.labkey.test.components.ext4.Window;
 import org.labkey.test.util.Ext4Helper;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.File;
 import java.util.Arrays;
@@ -50,6 +51,8 @@ public class SignalDataUploadPage
     public void uploadFile(File... file)
     {
         WebElement dropFileInputEl = Locators.dropFileInput.findElement(_test.getDriver());
+        _test.executeScript("arguments[0].setAttribute('class', '');arguments[0].setAttribute('style', '');", dropFileInputEl);
+        _test.shortWait().until(ExpectedConditions.elementToBeClickable(dropFileInputEl));
         _test.setInput(dropFileInputEl, Arrays.asList(file));
     }
 

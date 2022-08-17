@@ -27,6 +27,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.io.File;
 import java.util.Arrays;
 
+import static org.labkey.test.WebDriverWrapper.WAIT_FOR_JAVASCRIPT;
+import static org.labkey.test.WebDriverWrapper.sleep;
 import static org.labkey.test.components.ext4.Window.Window;
 
 public class SignalDataUploadPage
@@ -51,17 +53,24 @@ public class SignalDataUploadPage
     public void uploadFile(File... file)
     {
         WebElement dropFileInputEl = Locators.dropFileInput.findElement(_test.getDriver());
-        _test.executeScript("arguments[0].setAttribute('class', '');arguments[0].setAttribute('style', '');", dropFileInputEl);
-        _test.shortWait().until(ExpectedConditions.elementToBeClickable(dropFileInputEl));
         _test.setInput(dropFileInputEl, Arrays.asList(file));
+    }
+
+    public void waitForProgressBars(int count)
+    {
+        WebDriverWrapper.waitFor(() ->
+                Locator.byClass("x4-progress-bar").withAttribute("style", "width:100%")
+                        .findElements(_test.getDriver()).size() == count,
+                "Upload didn't finish.", 5_000);
+        sleep(500); // Just a little extra.
     }
 
     public void uploadIncorrectFile(File file)
     {
         uploadFile(file);
-        Locator msgBox = Locators.fileNotUploadedMsgBox(file.getName());
-        _test.waitForElement(msgBox);
-        msgBox.findElement(_test.getWrappedDriver()).sendKeys(Keys.ESCAPE);
+        WebElement msgBox = Locators.fileNotUploadedMsgBox(file.getName()).waitForElement(_test.getDriver(), WAIT_FOR_JAVASCRIPT);
+        msgBox.sendKeys(Keys.ESCAPE);
+        _test.shortWait().until(ExpectedConditions.invisibilityOf(msgBox));
     }
 
     public void deleteFile(String fileName)
@@ -97,6 +106,7 @@ public class SignalDataUploadPage
     {
         WebElement saveButton = Locators.saveButton.findElement(_test.getDriver());
         WebDriverWrapper.waitFor(() -> !saveButton.getAttribute("class").contains("disabled"), "Unable to save, button is disabled", 1000);
+        sleep(500); // Just a little extra wait. Getting a 404 from the 'MOVE' command when attempting to save too quickly
         _test.clickAndWait(Locators.saveButton);
     }
 

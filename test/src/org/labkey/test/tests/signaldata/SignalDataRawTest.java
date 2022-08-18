@@ -129,6 +129,10 @@ public class SignalDataRawTest extends BaseWebDriverTest
 
         log("Uploading metadata file");
         uploadPage.uploadMetadataFile(METADATA_FILE);
+
+        log("Attempting to upload a data file not specified in metadata");
+        uploadPage.uploadIncorrectFile(getFile(ASSAY_DATA_LOC + "/" + "BLANK235.TXT"));
+
         log("Uploading data files");
         int uploadCount = 3;
         uploadPage.uploadFile(
@@ -136,8 +140,6 @@ public class SignalDataRawTest extends BaseWebDriverTest
                 getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_2),
                 getFile(ASSAY_DATA_LOC + "/" + RESULT_FILENAME_3));
         uploadPage.waitForProgressBars(3);
-        log("Attempting to upload a data file not specified in metadata");
-        uploadPage.uploadIncorrectFile(getFile(ASSAY_DATA_LOC + "/" + "BLANK235.TXT"));
 
 // TODO: Not clear what delete should do- just make file unavailable?
 //        log("Delete a file");

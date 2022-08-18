@@ -52,6 +52,7 @@ public class SignalDataUploadPage
 
     public void uploadFile(File... file)
     {
+        sleep(1_000);
         WebElement dropFileInputEl = Locators.dropFileInput.findElement(_test.getDriver());
         _test.setInput(dropFileInputEl, Arrays.asList(file));
     }
@@ -62,7 +63,7 @@ public class SignalDataUploadPage
                 Locator.byClass("x4-progress-bar").withAttribute("style", "width:100%")
                         .findElements(_test.getDriver()).size() == count,
                 "Upload didn't finish.", 5_000);
-        sleep(500); // Just a little extra.
+        sleep(1_000);
     }
 
     public void uploadIncorrectFile(File file)
@@ -71,6 +72,7 @@ public class SignalDataUploadPage
         WebElement msgBox = Locators.fileNotUploadedMsgBox(file.getName()).waitForElement(_test.getDriver(), WAIT_FOR_JAVASCRIPT);
         msgBox.sendKeys(Keys.ESCAPE);
         _test.shortWait().until(ExpectedConditions.invisibilityOf(msgBox));
+        sleep(1_000);
     }
 
     public void deleteFile(String fileName)
@@ -106,7 +108,6 @@ public class SignalDataUploadPage
     {
         WebElement saveButton = Locators.saveButton.findElement(_test.getDriver());
         WebDriverWrapper.waitFor(() -> !saveButton.getAttribute("class").contains("disabled"), "Unable to save, button is disabled", 1000);
-        sleep(500); // Just a little extra wait. Getting a 404 from the 'MOVE' command when attempting to save too quickly
         _test.clickAndWait(Locators.saveButton);
     }
 

@@ -75,7 +75,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
                 //
                 if (xleft == 0 && xright == 0) {
                     for (d=0; d < _data.length; d++) {
-                        xy = _data[d][0].split(' ');
+                        xy = this.getXYRow(_data[d]);
                         xy[0] = parseFloat(xy[0]);
                         xy[1] = parseFloat(xy[1]);
                         newData.push(xy);
@@ -86,7 +86,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
                     // using bounds
                     //
                     for (d=0; d < _data.length; d++) {
-                        xy = _data[d][0].split(' ');
+                        xy = this.getXYRow(_data[d]);
                         xy[0] = parseFloat(xy[0]);
                         xy[1] = parseFloat(xy[1]);
                         if (xy[0] > xleft && xy[0] < xright)
@@ -101,7 +101,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
                 if (xleft == 0 && xright == 0) {
                     for (d=0; d < _data.length; d++) {
                         if (d%mod == 0) {
-                            xy = _data[d][0].split(' ');
+                            xy = this.getXYRow(_data[d]);
                             xy[0] = parseFloat(xy[0]);
                             xy[1] = parseFloat(xy[1]);
                             newData.push(xy);
@@ -114,7 +114,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
                     //
                     for (d=0; d < _data.length; d++) {
                         if (d%mod == 0) {
-                            xy = _data[d][0].split(' ');
+                            xy = this.getXYRow(_data[d]);
                             xy[0] = parseFloat(xy[0]);
                             xy[1] = parseFloat(xy[1]);
                             if (xy[0] > xleft && xy[0] < xright)
@@ -127,6 +127,19 @@ Ext4.define('LABKEY.SignalData.DataService', {
             data = newData;
         }
         return data;
+    },
+
+    /**
+     * Helper to return an XY array from the raw input data file. This helps normalize
+     * different data file delimiter types.
+     */
+    getXYRow : function(row) {
+        // space delimited
+        if (row.length === 1)
+            return row[0].split(' ');
+
+        // all others
+        return row;
     },
 
     /**
@@ -147,7 +160,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
 
                 for (d = 0; d < _data.length; d++)
                 {
-                    xy = _data[d][0].split(' ');
+                    xy = this.getXYRow(_data[d]);
                     y = parseFloat(xy[1]);
                     if (y > maxY)
                     {

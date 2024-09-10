@@ -276,7 +276,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
             function done(file, results) {
 
                 var store = me.getStore();
-                var idx = store.findExact(me.DATA_FILE, file.text);
+                var idx = store.find(me.DATA_FILE, file.text);
                 var process = store.getAt(idx);
 
                 //Set upload time
@@ -411,7 +411,7 @@ Ext4.define('LABKEY.SignalData.UploadLog', {
     workingDirectory: '',
     containsFile: function(file) {
         var store = this.getStore();
-        var idx = store.findExact(this.DATA_FILE, file.name);
+        var idx = store.find(this.DATA_FILE, file.name);
         return store.getAt(idx);
     }
 });

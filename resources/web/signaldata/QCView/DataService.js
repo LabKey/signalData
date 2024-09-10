@@ -25,7 +25,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
             if (content)
             {
                 if (Ext4.isFunction(callback))
-                    callback.call(scope || this, content);
+                    callback.call(scope || this, content, expData);
             }
             else
             {
@@ -35,7 +35,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
                     {
                         this._ContentCache[path] = c;
                         if (Ext4.isFunction(callback))
-                            callback.call(scope || this, c);
+                            callback.call(scope || this, c, expData);
                     },
                     failure: function (error)
                     {
@@ -61,7 +61,7 @@ Ext4.define('LABKEY.SignalData.DataService', {
     getData : function(datacontent, xleft, xright, mod) {
         var data = [];
         if (datacontent) {
-            var _data = datacontent.sheets[0].data;
+            var _data = [...datacontent.sheets[0].data];
             _data.shift(); // get rid of column headers
             var newData = [], d, xy;
 

@@ -64,7 +64,7 @@ Ext4.define('LABKEY.SignalData.SpectrumPlot', {
             color = colors[c%colors.length];
 
             if (useHighlight) {
-                isHighlight = (this.highlight === contents[i].fileName);
+                isHighlight = (this.highlight === contents[i].runName);
 
                 if (!isHighlight) {
                     color = '#A09C9C';

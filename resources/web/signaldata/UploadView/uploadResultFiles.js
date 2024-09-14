@@ -192,7 +192,7 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
 
                         //get modelInstance from store that matches file.name
                         var store = uploadLog.getStore();
-                        var idx = store.findExact('DataFile', file.name);
+                        var idx = store.find('DataFile', file.name);
                         var process = store.getAt(idx);
 
                         //Set upload time
@@ -354,8 +354,16 @@ LABKEY.SignalData.initializeDataFileUploadForm = function (metadataFormId, eleme
             },
             success: function() {
                 clearCachedReports(false, function() {
+                    let returnUrl = LABKEY.ActionURL.getReturnUrl();
+                    if (returnUrl) {
+                        if (window.location.hash)
+                            returnUrl = returnUrl.concat(window.location.hash);
+                    }
+                    else {
+                        returnUrl = LABKEY.ActionURL.buildURL('assay', 'assayBegin', null, {rowId: assay.id});
+                    }
                     uploadLog.workingDirectory = setWorkingDirectory();
-                    window.location = LABKEY.ActionURL.buildURL('assay', 'assayBegin', null, {rowId: assay.id});
+                    window.location = returnUrl;
                 },this);
             },
             failure: function(response){

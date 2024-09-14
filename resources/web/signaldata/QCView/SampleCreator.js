@@ -285,10 +285,11 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                     allContent = [],
                     contentMap = {};
 
-                var done = function(content) {
+                var done = function(content, pr) {
                     received++;
+                    content.runName = pr.runName;
                     allContent.push(content);
-                    contentMap[content.fileName] = content;
+                    contentMap[pr.runName] = content;
                     if (received == expected) {
                         this.allContent = allContent;
                         this.contentMap = contentMap;
@@ -296,15 +297,17 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                     }
                 };
 
-                for (var d=0; d < provisionalRuns.length; d++) {
-                    var pr = provisionalRuns[d].get('expDataRun');
+                Ext4.each(provisionalRuns, function(run){
+                    var pr = run.get('expDataRun');
                     if (pr) {
+                        // use the run name as the key for all data
+                        pr.runName = run.get('name');
                         SignalDataService.FileContentCache(pr, done, this);
                     }
                     else {
                         console.error('Failed to load expDataRun from provisional run.');
                     }
-                }
+                }, this);
 
             }, this);
         }
@@ -449,7 +452,7 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
         var modelname = sample.get('name');
 
         if (modelname) {
-            this.highlighted = sample.get('name') + '.'  + sample.get('fileExt');
+            this.highlighted = sample.get('name');
             this.renderPlot(this.allContent);
         }
     },
@@ -481,7 +484,7 @@ Ext4.define('LABKEY.SignalData.SampleCreator', {
                 include = this._getNode(view, model, 'input[name="include"]');
                 response = this._getNode(view, model, 'span[name="response"]');
 
-                var fileContent = this.contentMap[model.get('name') + '.' + model.get('fileExt')];
+                var fileContent = this.contentMap[model.get('name')];
                 var data = SignalDataService.getData(fileContent, xleft, xright, false);
                 var aucPeak = LABKEY.SignalData.Stats.getAUC(data, base);
                 response.update(+aucPeak.auc.toFixed(3));

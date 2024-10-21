@@ -43,6 +43,7 @@ import org.springframework.validation.BindException;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,14 +76,14 @@ public class SignalDataController extends SpringActionController
             PipeRoot root = PipelineService.get().findPipelineRoot(getContainer());
 
             String containerPath = null;
-            String webdavURL = null;
+            URI webdavURL = null;
 
             if (null != root)
             {
                 containerPath = root.getContainer().getPath();
                 webdavURL = root.getWebdavURL();
-                if (SignalDataAssayDataHandler.NAMESPACE.length() > 0)
-                    webdavURL += SignalDataAssayDataHandler.NAMESPACE;
+                if (!SignalDataAssayDataHandler.NAMESPACE.isEmpty())
+                    webdavURL = webdavURL.resolve(SignalDataAssayDataHandler.NAMESPACE);
 
                 //Create folder if needed
                 File sdFileRoot = new File(root.getRootPath(), SignalDataAssayDataHandler.NAMESPACE);
@@ -91,7 +92,7 @@ public class SignalDataController extends SpringActionController
             }
 
             resp.put("containerPath", containerPath);
-            resp.put("webDavURL", webdavURL);
+            resp.put("webDavURL", webdavURL.toString());
 
             return resp;
         }

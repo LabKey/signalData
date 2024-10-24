@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.labkey.api.files.FileContentService.UPLOADED_FILE;
 
@@ -92,7 +93,7 @@ public class SignalDataController extends SpringActionController
             }
 
             resp.put("containerPath", containerPath);
-            resp.put("webDavURL", webdavURL.toString());
+            resp.put("webDavURL", Objects.toString(webdavURL, null));
 
             return resp;
         }
@@ -129,7 +130,7 @@ public class SignalDataController extends SpringActionController
     public class getSignalDataResourceAction extends MutatingApiAction<SignalDataResourceForm>
     {
         @Override
-        public ApiResponse execute(SignalDataResourceForm form, BindException errors) throws Exception
+        public ApiResponse execute(SignalDataResourceForm form, BindException errors)
         {
             String path = form.getPath();
             WebdavResource resource = WebdavService.get().lookup(path);
@@ -191,7 +192,7 @@ public class SignalDataController extends SpringActionController
                     }
                     catch (MalformedURLException e)
                     {
-                        throw new UnexpectedException(e);
+                        throw UnexpectedException.wrap(e);
                     }
                     catch (SQLException e)
                     {
